@@ -24,40 +24,14 @@ jobs:
           SONAR_PROJECT_KEY="${ORG_NAME}_${REPO_NAME}"
           echo "SONAR_PROJECT_KEY=$SONAR_PROJECT_KEY" >> $GITHUB_ENV 
 
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          java-version: '21'
-          distribution: 'adopt'
-
-      - name: Create Sonar Gradle File
-        run: |
-          insert_string="plugins { id 'org.sonarqube' version '4.4.1.3373' }"
-          if [ -f "build.gradle" ]; then
-            echo "$insert_string" > temp.gradle
-            cat build.gradle >> temp.gradle
-            echo "" >> temp.gradle
-            echo "sonarqube {" >> temp.gradle
-            echo "    properties {" >> temp.gradle
-            echo "        property 'sonar.java.binaries', '**'" >> temp.gradle
-            echo "    }" >> temp.gradle
-            echo "}" >> temp.gradle
-            mv temp.gradle build.gradle
-          else
-            echo "$insert_string" > build.gradle
-            echo "" >> build.gradle
-            echo "sonarqube {" >> build.gradle
-            echo "    properties {" >> build.gradle
-            echo "        property 'sonar.java.binaries', '**'" >> build.gradle
-            echo "    }" >> build.gradle
-            echo "}" >> build.gradle
-          fi
-          chmod 777 ./gradlew
-          
-
-      - name: Analyze
-        run: ./gradlew sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.organization=f-lab-edu-1 -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SECRET_SONARQUBE }} -Dsonar.gradle.skipCompile=true
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        id: analyze-sonarcloud
+        continue-on-error: true
         env:
+          GITHUB_TOKEN: ${{ secrets.SECRET_GITHUB_BOT }}
           SONAR_TOKEN: ${{ secrets.SECRET_SONARQUBE }}
-
-          
+        with:
+          args:
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=f-lab-edu-1
