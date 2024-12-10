@@ -1,6 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
+    id("kotlin-kapt")
+//    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt.android)
+//    id("kotlin-kapt") // kapt 플러그인 추가
 }
 
 android {
@@ -36,6 +41,11 @@ android {
 }
 
 dependencies {
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    // Hilt 의존성 추가
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -45,4 +55,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
+}
+hilt {
+    enableAggregatingTask = false
+}
+fun kapt(compiler: Provider<MinimalExternalModuleDependency>) {
+
 }
