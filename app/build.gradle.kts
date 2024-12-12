@@ -1,11 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-
-    id("kotlin-kapt")
-//    id("com.google.dagger.hilt.android")
     alias(libs.plugins.hilt.android)
-//    id("kotlin-kapt") // kapt 플러그인 추가
+    kotlin("kapt")
 }
 
 android {
@@ -38,14 +35,26 @@ android {
     kotlinOptions {
         jvmTarget = "21"
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
-
 dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson)
-    // Hilt 의존성 추가
+    // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    kapt(libs.hilt.compiler)
+
+    implementation(libs.hilt.lifecycle)
+
+    implementation(libs.hilt.converter)
+    implementation(libs.logging.interceptor)
+    // Android ktx
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.livedata)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -60,6 +69,11 @@ dependencies {
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+    useBuildCache = false
+    showProcessorStats = true
+    arguments {
+        arg("key", "value")
+    }
 }
 hilt {
     enableAggregatingTask = false
