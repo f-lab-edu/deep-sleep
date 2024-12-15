@@ -14,19 +14,15 @@ class PhotoViewModel : ViewModel() {
     private val _randomPhoto = MutableLiveData<String>()
     val randomPhoto: LiveData<String> get() = _randomPhoto
 
-    fun getARandomPhoto(){
+    fun getARandomPhoto(count: Int) {
         viewModelScope.launch {
-            try{
-                val tempString = unplashRepository.getARandomPhoto()
-                _randomPhoto.postValue(tempString.toString())
-
-                Log.d("PhotoViewModel", tempString.toString())
-
-            }catch (e: Exception){
-                Log.e("PhotoViewModel", e.message.toString())
+            val result = unplashRepository.getARandomPhoto(count)
+            result.onSuccess { photoList ->
+                _randomPhoto.postValue(photoList.toString())
+            }.onFailure { error ->
+                Log.e("PhotoViewModel", error.message ?: "Unknown error")
             }
         }
     }
-
 
 }

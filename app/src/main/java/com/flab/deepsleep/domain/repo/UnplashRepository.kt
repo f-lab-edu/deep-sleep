@@ -1,5 +1,6 @@
 package com.flab.deepsleep.domain.repo
 
+import android.util.Log
 import com.flab.deepsleep.BuildConfig
 import com.flab.deepsleep.data.api.NetworkModule
 import com.flab.deepsleep.data.entity.PhotoResponse
@@ -14,8 +15,12 @@ class UnplashRepository  {
             val response = unplashService.getRandomPhotos(clientId, count)
 
             if (response.isSuccessful) {
+                Log.d("UnplashRepository", response.body().toString())
+
                 Result.success(response.body() ?: emptyList())
+
             } else {
+                Log.d("UnplashRepository", "else")
                 Result.failure(Exception("Error: ${response.code()} - ${response.message()}"))
             }
         } catch (e: Exception) {
