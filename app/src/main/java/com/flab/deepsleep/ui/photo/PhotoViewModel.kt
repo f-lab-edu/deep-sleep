@@ -6,13 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flab.deepsleep.domain.repo.UnplashRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class PhotoViewModel @Inject constructor(
-    private val unplashRepository: UnplashRepository): ViewModel() {
+class PhotoViewModel : ViewModel() {
+    private val unplashRepository = UnplashRepository()
 
     private val _randomPhoto = MutableLiveData<String>()
     val randomPhoto: LiveData<String> get() = _randomPhoto
@@ -23,10 +20,13 @@ class PhotoViewModel @Inject constructor(
                 val tempString = unplashRepository.getARandomPhoto()
                 _randomPhoto.postValue(tempString.toString())
 
+                Log.d("PhotoViewModel", tempString.toString())
+
             }catch (e: Exception){
                 Log.e("PhotoViewModel", e.message.toString())
             }
         }
     }
+
 
 }
