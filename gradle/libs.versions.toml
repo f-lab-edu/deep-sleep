@@ -21,6 +21,9 @@ viewmodel = "2.8.7"
 runtime = "2.8.7"
 livedata = "2.8.7"
 logging = "4.10.0"
+glide = "4.16.0"
+json = "1.7.3"
+ktor = "2.3.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,13 +45,18 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-lifecycle = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hilt-lifecycle" }
-
 hilt-converter = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converter" }
-
 
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "viewmodel" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "runtime" }
 androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "livedata" }
+
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-content = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-kotlinx = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,11 +1,8 @@
 package com.flab.deepsleep
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
@@ -13,7 +10,7 @@ import com.flab.deepsleep.ui.photo.PhotoViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val PhotoViewModel = PhotoViewModel()
+    private val photoViewModel = PhotoViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +23,10 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        photoViewModel.getARandomPhoto(1)
+        photoViewModel.randomPhoto.observe(this, Observer {
 
-        PhotoViewModel.getARandomPhoto(1)
+        })
     }
+
 }
