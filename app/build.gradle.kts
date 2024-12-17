@@ -5,7 +5,6 @@ val localProperties = Properties()
 localProperties.load(FileInputStream(rootProject.file("local.properties")))
 
 plugins {
-
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
@@ -51,10 +50,11 @@ android {
 dependencies {
     kapt(libs.hilt.android.compiler)
     kapt(libs.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.hilt.android)
-    implementation(libs.hilt.lifecycle)
+//    implementation(libs.hilt.lifecycle)
     implementation(libs.hilt.converter)
     implementation(libs.logging.interceptor)
     // Android ktx

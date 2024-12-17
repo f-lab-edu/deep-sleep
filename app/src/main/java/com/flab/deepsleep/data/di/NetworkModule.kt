@@ -12,9 +12,11 @@
 //import retrofit2.converter.gson.GsonConverterFactory
 //import javax.inject.Singleton
 //
-//@InstallIn(SingletonComponent::class)
 //@Module
+//@InstallIn(SingletonComponent::class)
 //class NetworkModule {
+//    private val BASE_URL = "https://api.unsplash.com/"
+//
 //    //TODO : DI TEST
 //    @Provides
 //    @Singleton
@@ -25,16 +27,10 @@
 //    // TODO : Network Module
 //    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
 //        return Retrofit.Builder()
-//            .baseUrl("https://api.unsplash.com/") // Base URL
+//            .baseUrl(BASE_URL)
 //            .client(okHttpClient)
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .build()
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideUnplashService(retrofit: Retrofit): UnplashService {
-//        return retrofit.create(UnplashService::class.java)
 //    }
 //
 //    @Singleton
@@ -47,5 +43,11 @@
 //            .build()
 //    } else {
 //        OkHttpClient.Builder().build()
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideUnplashService(retrofit: Retrofit): UnplashService {
+//        return retrofit.create(UnplashService::class.java)
 //    }
 //}
