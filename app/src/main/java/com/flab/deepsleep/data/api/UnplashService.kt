@@ -1,6 +1,6 @@
 package com.flab.deepsleep.data.api
 
-import okhttp3.ResponseBody
+import com.flab.deepsleep.data.entity.photo.RandomPhoto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,5 +10,5 @@ interface UnplashService {
     suspend fun getRandomPhotos(
         @Query("client_id") clientId: String,
         @Query("count") count: Int = 1
-    ): ResponseBody
+    ): List<RandomPhoto>
 }

@@ -1,7 +1,7 @@
 package com.flab.deepsleep.data.repo
 
-import okhttp3.ResponseBody
+import com.flab.deepsleep.data.entity.photo.RandomPhoto
 
 interface UnplashRepository {
-    suspend fun getRandomPhotos(count: Int) : ResponseBody
+    suspend fun getRandomPhotos(count: Int) : List<RandomPhoto>
 }
