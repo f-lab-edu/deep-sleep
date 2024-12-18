@@ -12,6 +12,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: access to secrets
+        run: |
+          echo "UNSPLASH_ACCESS_KEY=$UNSPLASH_ACCESS_KEY" >> .env
+        env:
+          UNSPLASH_ACCESS_KEY: ${{secrets.UNSPLASH_ACCESS_KEY}}
+
     - name: set up JDK 21
       uses: actions/setup-java@v4
       with:
