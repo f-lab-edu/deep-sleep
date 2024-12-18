@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     kotlin("kapt")
-}
+
 
 android {
     namespace = "com.flab.deepsleep"
@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.ktor.cio)
     implementation(libs.ktor.content)
     implementation(libs.ktor.kotlinx)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
