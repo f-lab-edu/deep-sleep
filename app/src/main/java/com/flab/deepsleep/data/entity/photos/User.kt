@@ -1,4 +1,4 @@
-package com.flab.deepsleep.data.entity.photo
+package com.flab.deepsleep.data.entity.photos
 
 import com.google.gson.annotations.SerializedName
 
@@ -14,11 +14,11 @@ data class User(
     @SerializedName("portfolio_url")
     val portfolioUrl: String?,
     @SerializedName("total_collections")
-    val totalCollections: Int?,
+    val totalCollections: Int,
     @SerializedName("total_likes")
-    val totalLikes: Int?,
+    val totalLikes: Int,
     @SerializedName("total_photos")
-    val totalPhotos: Int?,
+    val totalPhotos: Int,
     @SerializedName("updated_at")
     val updatedAt: String?,
     @SerializedName("username")

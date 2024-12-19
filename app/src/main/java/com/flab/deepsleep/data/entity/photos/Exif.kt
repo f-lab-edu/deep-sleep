@@ -1,4 +1,4 @@
-package com.flab.deepsleep.data.entity.photo
+package com.flab.deepsleep.data.entity.photos
 
 import com.google.gson.annotations.SerializedName
 
@@ -10,7 +10,7 @@ data class Exif(
     @SerializedName("focal_length")
     val focalLength: String?,
     @SerializedName("iso")
-    val iso: Int?,
+    val iso: Int,
     @SerializedName("make")
     val make: String?,
     @SerializedName("model")
