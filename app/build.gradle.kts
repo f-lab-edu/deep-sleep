@@ -1,13 +1,14 @@
+import java.io.FileInputStream
+import java.util.Properties
+val localProperties = Properties()
+localProperties.load(FileInputStream(rootProject.file("local.properties")))
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-
-    id("kotlin-kapt")
-//    id("com.google.dagger.hilt.android")
     alias(libs.plugins.hilt.android)
-//    id("kotlin-kapt") // kapt 플러그인 추가
-}
+    kotlin("kapt")
 
+}
 android {
     namespace = "com.flab.deepsleep"
     compileSdk = 35
@@ -19,9 +20,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val unsplashAccessKey = localProperties.getProperty("UNSPLASH_ACCESS_KEY") ?: ""
+        buildConfigField("String", "UNSPLASH_ACCESS_KEY", "\"$unsplashAccessKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -32,20 +34,32 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
-
 dependencies {
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
     implementation(libs.retrofit)
     implementation(libs.gson)
-    // Hilt 의존성 추가
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.converter)
+    implementation(libs.logging.interceptor)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.glide)
+    implementation(libs.json)
+    implementation(libs.timber)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -56,14 +70,15 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
-
-// Allow references to generated code
 kapt {
     correctErrorTypes = true
+    useBuildCache = false
+    showProcessorStats = true
+    arguments {
+        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
+    }
 }
 hilt {
     enableAggregatingTask = false
 }
-fun kapt(compiler: Provider<MinimalExternalModuleDependency>) {
 
-}
