@@ -27,8 +27,33 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+<<<<<<< HEAD
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+=======
+        setContentView(R.layout.activity_main)
+
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        val imageView: ImageView = findViewById(R.id.testImageView)
+
+        photoViewModel.getARandomPhoto(1)
+        photoViewModel.randomphotoUrl.observe(this, Observer {
+            val imageUrl = it
+
+            Glide.with(this)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
+        })
+
+        val imageView: ImageView = findViewById(R.id.testImageView)
+        val editText: EditText = findViewById(R.id.editText)
+>>>>>>> b36fdd3b7cad1d7bc892b2428c72c31810961991
 
         // TODO : 버튼 누르면 검색
         val searchButton: ImageView = findViewById(R.id.search_button)
@@ -47,4 +72,5 @@ class MainActivity : AppCompatActivity() {
                 .into(binding.testImageView)
         })
     }
+
 }

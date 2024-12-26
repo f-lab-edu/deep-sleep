@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.timber)
 
 
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -75,6 +76,7 @@ kapt {
     correctErrorTypes = true
     useBuildCache = false
     showProcessorStats = true
+
     arguments {
         arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
     }
@@ -82,4 +84,3 @@ kapt {
 hilt {
     enableAggregatingTask = false
 }
-
