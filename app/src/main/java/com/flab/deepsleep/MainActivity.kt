@@ -28,14 +28,23 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        val textView: TextView = findViewById(R.id.textView)
-        textView.text = testString
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val imageView: ImageView = findViewById(R.id.testImageView)
+
+        photoViewModel.getARandomPhoto(1)
+        photoViewModel.randomphotoUrl.observe(this, Observer {
+            val imageUrl = it
+
+            Glide.with(this)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
+        })
 
         val imageView: ImageView = findViewById(R.id.testImageView)
         val editText: EditText = findViewById(R.id.editText)
@@ -58,4 +67,5 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+
 }

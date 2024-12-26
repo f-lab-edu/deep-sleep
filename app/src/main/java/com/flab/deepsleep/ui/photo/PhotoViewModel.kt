@@ -33,4 +33,3 @@ class PhotoViewModel @Inject constructor(private val unplashRepositoryImpl: Unpl
         }
     }
 
-}

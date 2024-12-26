@@ -8,7 +8,6 @@ import timber.log.Timber.*
 
 
 @HiltAndroidApp
-<<<<<<< HEAD
 class MainApplication: Application(){
 
     override fun onCreate() {
@@ -19,7 +18,6 @@ class MainApplication: Application(){
         }
     }
 }
-=======
+
 class MainApplication: Application()
 
->>>>>>> 398d5faf609e2a127856abd79995f15b5c86853c
