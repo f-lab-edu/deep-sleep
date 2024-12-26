@@ -2,6 +2,7 @@
 agp = "8.7.3"
 artifactid = "version"
 gson = "2.11.0"
+
 hiltAndroidCompiler = "2.51.1"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
@@ -62,5 +63,4 @@ ktor-kotlinx = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-
 

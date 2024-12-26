@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.ktor.content)
     implementation(libs.ktor.kotlinx)
 
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
