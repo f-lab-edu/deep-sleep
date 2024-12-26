@@ -11,6 +11,7 @@ plugins {
     kotlin("kapt")
 }
 
+
 android {
     namespace = "com.flab.deepsleep"
     compileSdk = 35

@@ -1,7 +1,8 @@
 package com.flab.deepsleep
 
 import android.os.Bundle
-import android.widget.TextView
+import android.widget.ImageView
+
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,17 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val imageView: ImageView = findViewById(R.id.testImageView)
+
+        photoViewModel.getARandomPhoto(1)
+        photoViewModel.randomphotoUrl.observe(this, Observer {
+            val imageUrl = it
+
+            Glide.with(this)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
+        })
 
         photoViewModel.getARandomPhoto(1)
     }
