@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     kotlin("kapt")
+
 }
 android {
     namespace = "com.flab.deepsleep"
@@ -59,6 +60,7 @@ dependencies {
     implementation(libs.json)
     implementation(libs.timber)
 
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -79,3 +81,4 @@ kapt {
 hilt {
     enableAggregatingTask = false
 }
+
