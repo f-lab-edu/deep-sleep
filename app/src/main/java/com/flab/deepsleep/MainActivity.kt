@@ -33,13 +33,12 @@ class MainActivity : AppCompatActivity() {
 
         val imageView: ImageView = findViewById(R.id.testImageView)
         val editText: EditText = findViewById(R.id.editText)
-        Timber.plant(Timber.DebugTree())
 
         // TODO : 버튼 누르면 검색
         val searchButton: ImageView = findViewById(R.id.search_button)
         searchButton.setOnClickListener{
             val query: String = editText.text.toString()
-            Timber.d("Timber" + query)
+            Timber.d("Timber " + query)
             photoViewModel.getSearchPhotos(query)
         }
 

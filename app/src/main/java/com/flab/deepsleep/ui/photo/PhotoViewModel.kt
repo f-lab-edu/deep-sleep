@@ -27,7 +27,6 @@ class PhotoViewModel @Inject constructor(private val unplashRepositoryImpl: Unpl
     }
 
     fun getSearchPhotos(query: String){
-        Timber.plant(Timber.DebugTree())
         viewModelScope.launch {
             val result = unplashRepositoryImpl.getSearchPhotos(query)
             Timber.d("TIMBER " + result)
