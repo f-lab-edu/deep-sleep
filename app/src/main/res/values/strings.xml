@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">deepsleep</string>
 
-    <string name="unsplash_access_key">e57cIC_QiWXqfISkT65dC9nC37YK-vqDEnNMvQUVMtI</string>
-    <string name="unsplash_secret_key">nm6YMfhAqdfP12NB_ZoQvDtOZFRSVDTU-j8mmk4sB7Y</string>
+    <!--activity_main-->
+    <string name="search">검색 입력</string>
+    <!--./-->
 </resources>
