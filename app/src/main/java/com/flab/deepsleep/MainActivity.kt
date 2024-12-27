@@ -1,21 +1,19 @@
 package com.flab.deepsleep
 
+import PhotoAdapter
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.photo.PhotoViewModel
-import com.flab.deepsleep.utils.setOnTextChangedListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -23,54 +21,35 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
     private val photoViewModel: PhotoViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
+    private lateinit var photoAdapter: PhotoAdapter
+
+    val photoRecyclerView: RecyclerView by lazy {
+        binding.photosRecyclerView
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-<<<<<<< HEAD
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-=======
-        setContentView(R.layout.activity_main)
 
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        val imageView: ImageView = findViewById(R.id.testImageView)
-
-        photoViewModel.getARandomPhoto(1)
-        photoViewModel.randomphotoUrl.observe(this, Observer {
-            val imageUrl = it
-
-            Glide.with(this)
-                .load(imageUrl)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView)
-        })
-
-        val imageView: ImageView = findViewById(R.id.testImageView)
-        val editText: EditText = findViewById(R.id.editText)
->>>>>>> b36fdd3b7cad1d7bc892b2428c72c31810961991
-
-        // TODO : 버튼 누르면 검색
+        /* 버튼 누르면 검색 */
         val searchButton: ImageView = findViewById(R.id.search_button)
         searchButton.setOnClickListener{
             val query: String = binding.editText.text.toString()
-            Timber.d("Timber " + query)
             photoViewModel.getSearchPhotos(query)
         }
 
-        photoViewModel.getARandomPhoto(1)
-        photoViewModel.randomphotoUrl.observe(this, Observer {
-            val imageUrl = it
-            Glide.with(this)
-                .load(imageUrl)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(binding.testImageView)
+        photoViewModel.searchPhotosList.observe(this, Observer {
+            photoAdapter = PhotoAdapter(it)
+            setupRecyclerView()
         })
+
+    }// ./onCreate()
+
+    private fun setupRecyclerView() {
+        photoRecyclerView.layoutManager = LinearLayoutManager(this)
+        photoRecyclerView.adapter = photoAdapter
     }
 
 }
