@@ -25,20 +25,22 @@ class PhotoViewModel @Inject constructor(private val unplashRepositoryImpl: Unpl
                 if (randomPhoto != null) {
                     _randomphotoUrl.value = randomPhoto.urls?.full
                 }
-            }catch (e: IOException){
+            } catch (e: IOException) {
                 Timber.e("Network error: ${e.localizedMessage}")
             }
         }
     }
 
-    fun getSearchPhotos(query: String){
+    fun getSearchPhotos(query: String) {
         viewModelScope.launch {
             try {
                 val result = unplashRepositoryImpl.getSearchPhotos(query)
                 Timber.d("TIMBER " + result)
-            }catch (e: IOException){
+            } catch (e: IOException) {
                 Timber.e("Network error: ${e.localizedMessage}")
             }
         }
     }
+
+}
 

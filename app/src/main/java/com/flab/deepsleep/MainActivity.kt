@@ -27,10 +27,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-<<<<<<< HEAD
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-=======
         setContentView(R.layout.activity_main)
 
 
@@ -50,10 +46,6 @@ class MainActivity : AppCompatActivity() {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
         })
-
-        val imageView: ImageView = findViewById(R.id.testImageView)
-        val editText: EditText = findViewById(R.id.editText)
->>>>>>> b36fdd3b7cad1d7bc892b2428c72c31810961991
 
         // TODO : 버튼 누르면 검색
         val searchButton: ImageView = findViewById(R.id.search_button)
