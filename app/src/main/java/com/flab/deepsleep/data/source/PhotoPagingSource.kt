@@ -8,7 +8,8 @@ import com.flab.deepsleep.data.repo.UnplashRepositoryImpl
 
 class PhotoPagingSource(
     private val unplashRepositoryImpl: UnplashRepositoryImpl,
-    private val photoIdList: List<String>): PagingSource<Int, SinglePhoto>() {
+    private val photoIdList: List<String>
+) : PagingSource<Int, SinglePhoto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SinglePhoto> {
         return try {

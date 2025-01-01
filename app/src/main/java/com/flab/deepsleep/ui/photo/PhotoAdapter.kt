@@ -37,8 +37,11 @@ class PhotoAdapter(private var images: List<String?>) :
 
     companion object {
         private val PHOTO_COMPARATOR = object : DiffUtil.ItemCallback<SinglePhoto>() {
-            override fun areItemsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean = oldItem.id == newItem.id
-            override fun areContentsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean = oldItem == newItem
+            override fun areItemsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean =
+                oldItem == newItem
         }
     }
 

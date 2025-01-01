@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         /* 버튼 누르면 검색 */
         val searchButton: ImageView = binding.searchButton
-        searchButton.setOnClickListener{
+        searchButton.setOnClickListener {
             val query: String = binding.editText.text.toString()
             photoViewModel.getSearchPhotos(query)
         }
@@ -45,10 +45,10 @@ class MainActivity : AppCompatActivity() {
         })
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(this, Observer {
-                it -> it?.let {
-            showErrorDialog(it)
-        }
+        photoViewModel.errorMessage.observe(this, Observer { it ->
+            it?.let {
+                showErrorDialog(it)
+            }
         })
     }// ./onCreate()
 
@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         photoRecyclerView.layoutManager = LinearLayoutManager(this)
         photoRecyclerView.adapter = photoAdapter
     }
+
     private fun showErrorDialog(message: String) {
         AlertDialog.Builder(this)
             .setTitle("Error")
