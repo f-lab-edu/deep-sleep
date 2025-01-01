@@ -60,7 +60,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.json)
     implementation(libs.timber)
-
+    implementation(libs.paging)
 
 
     implementation(libs.androidx.core.ktx)

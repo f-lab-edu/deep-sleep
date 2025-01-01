@@ -17,5 +17,6 @@ class MainApplication: Application(){
             Timber.plant(TimberDebugTree())
         }
     }
+
 }
 
