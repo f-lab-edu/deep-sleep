@@ -2,6 +2,8 @@ package com.flab.deepsleep
 
 import PhotoAdapter
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 
 import androidx.activity.enableEdgeToEdge
@@ -11,9 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.photo.PhotoViewModel
+import com.flab.deepsleep.utils.setOnTextChangedListener
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -25,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private val photoAdapter: PhotoAdapter by lazy {
         PhotoAdapter(emptyList())
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +62,6 @@ class MainActivity : AppCompatActivity() {
         photoRecyclerView.layoutManager = LinearLayoutManager(this)
         photoRecyclerView.adapter = photoAdapter
     }
-
     private fun showErrorDialog(message: String) {
         AlertDialog.Builder(this)
             .setTitle("Error")
@@ -65,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .show()
+
     }
 
 }

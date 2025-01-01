@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 class UnplashRepositoryImpl @Inject constructor(private val unplashService: UnplashService) : UnplashRepository {
 
+
     override suspend fun getRandomPhotos(count: Int): List<SinglePhoto> {
         val clientId = BuildConfig.UNSPLASH_ACCESS_KEY
         val response = unplashService.getRandomPhotos(clientId, count)
@@ -25,5 +26,6 @@ class UnplashRepositoryImpl @Inject constructor(private val unplashService: Unpl
         val response = unplashService.getSinglePhotoById(photoId, clientId)
         return response
     }
+
 
 }
