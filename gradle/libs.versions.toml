@@ -23,6 +23,7 @@ logging = "4.10.0"
 glide = "4.16.0"
 json = "1.7.3"
 timber = "5.0.1"
+paging = "3.3.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,7 +50,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-
+paging = {module = "androidx.paging:paging-runtime", version.ref = "paging"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
