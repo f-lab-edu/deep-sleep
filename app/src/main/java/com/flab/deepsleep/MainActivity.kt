@@ -1,6 +1,8 @@
 package com.flab.deepsleep
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 
 import androidx.activity.enableEdgeToEdge
@@ -11,13 +13,16 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.photo.PhotoViewModel
+import com.flab.deepsleep.utils.setOnTextChangedListener
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val photoViewModel: PhotoViewModel by viewModels()
-
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,22 @@ class MainActivity : AppCompatActivity() {
                 .into(imageView)
         })
 
+        // TODO : 버튼 누르면 검색
+        val searchButton: ImageView = findViewById(R.id.search_button)
+        searchButton.setOnClickListener{
+            val query: String = binding.editText.text.toString()
+            Timber.d("Timber " + query)
+            photoViewModel.getSearchPhotos(query)
+        }
+
+        photoViewModel.getARandomPhoto(1)
+        photoViewModel.randomphotoUrl.observe(this, Observer {
+            val imageUrl = it
+            Glide.with(this)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(binding.testImageView)
+        })
     }
 
 }
