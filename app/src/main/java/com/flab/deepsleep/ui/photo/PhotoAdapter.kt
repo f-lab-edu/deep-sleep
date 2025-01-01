@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 
-class PhotoAdapter(private val images: List<String?>) :
+class PhotoAdapter(private var images: List<String?>) :
     RecyclerView.Adapter<PhotoAdapter.ImageViewHolder>() {
 
     inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -27,5 +27,10 @@ class PhotoAdapter(private val images: List<String?>) :
     }
 
     override fun getItemCount(): Int = images.size
+
+    fun updateData(newPhotos: List<String?>) {
+        images = newPhotos
+        notifyDataSetChanged() // 데이터를 갱신
+    }
 
 }

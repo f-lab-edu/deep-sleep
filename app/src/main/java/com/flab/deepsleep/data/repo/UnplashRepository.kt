@@ -6,5 +6,5 @@ import com.flab.deepsleep.data.entity.search.SearchPhotos
 interface UnplashRepository {
     suspend fun getRandomPhotos(count: Int) : List<SinglePhoto>
     suspend fun getSearchPhotos(query: String) : SearchPhotos
-    suspend fun getAPhotoById(photoId: String) : SinglePhoto
+    suspend fun getSinglePhotoById(photoId: String) : SinglePhoto
 }

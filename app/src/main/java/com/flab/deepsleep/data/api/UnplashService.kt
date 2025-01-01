@@ -21,7 +21,7 @@ interface UnplashService {
     ): SearchPhotos
 
     @GET("/photos/{id}")
-    suspend fun getAPhotoById(
+    suspend fun getSinglePhotoById(
         @Path("id") photoId: String,
         @Query("client_id") clientId: String
     ): SinglePhoto

@@ -12,7 +12,8 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class PhotoViewModel @Inject constructor(private val unplashRepositoryImpl: UnplashRepositoryImpl) : ViewModel() {
+class PhotoViewModel @Inject constructor(private val unplashRepositoryImpl: UnplashRepositoryImpl) :
+    ViewModel() {
 
     private val _randomphotoUrl = MutableLiveData<String?>()
     val randomphotoUrl: LiveData<String?> get() = _randomphotoUrl
@@ -21,9 +22,11 @@ class PhotoViewModel @Inject constructor(private val unplashRepositoryImpl: Unpl
     private val _searchPhotosList = MutableLiveData<List<String?>>()
     val searchPhotosList: LiveData<List<String?>> get() = _searchPhotosList
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
 
     /* 랜덤 사진 하나 출력 */
-    fun getARandomPhoto(count: Int) {
+    fun getSingleRandomPhoto(count: Int) {
         viewModelScope.launch {
             try {
                 val result = unplashRepositoryImpl.getRandomPhotos(count)
@@ -31,8 +34,8 @@ class PhotoViewModel @Inject constructor(private val unplashRepositoryImpl: Unpl
                 if (randomPhoto != null) {
                     _randomphotoUrl.value = randomPhoto.urls?.full
                 }
-            } catch (e: IOException) {
-                networkError(e)
+            } catch (e: Exception) {
+                _errorMessage.value = e.message
             }
         }
     }
@@ -45,37 +48,33 @@ class PhotoViewModel @Inject constructor(private val unplashRepositoryImpl: Unpl
                 val result = unplashRepositoryImpl.getSearchPhotos(query)
                 Timber.d("getSearchPhotos() " + result)
 
-                for(results in result.results){
+                for (results in result.results!!) {
                     if (results?.description != null) {
                         val id: String = results.id.toString()
                         getAPhotoById(id)
                     }
                 }
 
-            } catch (e: IOException) {
-                networkError(e)
+            } catch (e: Exception) {
+                _errorMessage.value = e.message
             }
         }
     }
 
-    fun getAPhotoById(id: String){
+    fun getAPhotoById(id: String) {
         viewModelScope.launch {
             try {
                 val result = id?.let {
-                    val singlePhoto = unplashRepositoryImpl.getAPhotoById(it)
+                    val singlePhoto = unplashRepositoryImpl.getSinglePhotoById(it)
                     urlList.add(singlePhoto.urls?.full)
                 }
                 _searchPhotosList.value = urlList
                 Timber.d("urlList " + urlList)
-            }catch (e: IOException){
-                networkError(e)
+            } catch (e: Exception) {
+                _errorMessage.value = e.message
             }
         }
     }
 
-    /* Error */
-    fun networkError(e: IOException){
-        Timber.e("Network error: ${e.localizedMessage}")
-    }
 
 }

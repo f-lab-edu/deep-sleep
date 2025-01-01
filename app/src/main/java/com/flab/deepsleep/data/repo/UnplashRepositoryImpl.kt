@@ -20,9 +20,9 @@ class UnplashRepositoryImpl @Inject constructor(private val unplashService: Unpl
         return response
     }
 
-    override suspend fun getAPhotoById(photoId: String): SinglePhoto {
+    override suspend fun getSinglePhotoById(photoId: String): SinglePhoto {
         val clientId = BuildConfig.UNSPLASH_ACCESS_KEY
-        val response = unplashService.getAPhotoById(photoId, clientId)
+        val response = unplashService.getSinglePhotoById(photoId, clientId)
         return response
     }
 
