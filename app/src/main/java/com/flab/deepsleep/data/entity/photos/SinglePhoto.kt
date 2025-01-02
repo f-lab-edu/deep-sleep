@@ -2,7 +2,7 @@ package com.flab.deepsleep.data.entity.photos
 
 import com.google.gson.annotations.SerializedName
 
-data class RandomPhoto(
+data class SinglePhoto(
     @SerializedName("blur_hash")
     val blurHash: String?,
     @SerializedName("color")
@@ -22,7 +22,7 @@ data class RandomPhoto(
     @SerializedName("likes")
     val likes: Int,
     @SerializedName("public_domain")
-    val publicDomain: Boolean,
+    val publicDomain: Boolean?,
     @SerializedName("updated_at")
     val updatedAt: String?,
     @SerializedName("width")

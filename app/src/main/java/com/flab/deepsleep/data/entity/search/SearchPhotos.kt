@@ -7,6 +7,7 @@ data class SearchPhotos(
     @SerializedName("total_pages")
     val totalPages: Int,
     @SerializedName("results")
-    val results: List<Results?>
+    val results: List<Results?>?
+
 )
 

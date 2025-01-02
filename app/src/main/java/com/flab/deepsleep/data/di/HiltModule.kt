@@ -44,5 +44,4 @@ object HiltModule {
     fun provideUnplashService(retrofit: Retrofit): UnplashService{
         return HiltModule.retrofit.create(UnplashService::class.java)
     }
-//    val unplashService: UnplashService = retrofit.create(UnplashService::class.java)
 }
