@@ -6,8 +6,8 @@ import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.data.entity.search.SearchPhotos
 import javax.inject.Inject
 
-class UnplashRepositoryImpl @Inject constructor(private val unplashService: UnplashService) : UnplashRepository {
-
+class UnplashRepositoryImpl @Inject constructor(private val unplashService: UnplashService) :
+    UnplashRepository {
 
     override suspend fun getRandomPhotos(count: Int): List<SinglePhoto> {
         val clientId = BuildConfig.UNSPLASH_ACCESS_KEY
@@ -26,6 +26,5 @@ class UnplashRepositoryImpl @Inject constructor(private val unplashService: Unpl
         val response = unplashService.getSinglePhotoById(photoId, clientId)
         return response
     }
-
 
 }

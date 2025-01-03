@@ -1,5 +1,6 @@
 import java.io.FileInputStream
 import java.util.Properties
+
 val localProperties = Properties()
 localProperties.load(FileInputStream(rootProject.file("local.properties")))
 plugins {
@@ -54,14 +55,15 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.converter)
     implementation(libs.logging.interceptor)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.runtime)
+    implementation(libs.lifecycle.livedata)
+    implementation(libs.lifecycle.viewmodel.savedstate)
     implementation(libs.glide)
     implementation(libs.json)
     implementation(libs.timber)
     implementation(libs.paging)
-
+    implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
