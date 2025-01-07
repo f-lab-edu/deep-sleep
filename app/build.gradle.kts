@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
     implementation(libs.okhttp.profiler)
+//    implementation(libs.okhttpprofiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -13,6 +13,9 @@ import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.data.repo.UnplashRepositoryImpl
 import com.flab.deepsleep.data.source.PhotoPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -45,14 +48,34 @@ class PhotoViewModel @Inject constructor(
 
     /* 사진 검색 */
     fun searchPhotos(query: String) {
-        viewModelScope.launch {
-            _photoState.value = null
-            try {
-                val photos = getSearchPhotos(query)
-                _photoState.value = photos
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _photoState.value = emptyList()
+        searchDebouncer(query)
+    }
+
+    private val searchDebouncer = debounce<String>(
+        timeMillis = 300L,
+        coroutineScope = viewModelScope
+    ) { query ->
+        _photoState.value = null
+        try {
+            val photos = getSearchPhotos(query)
+            _photoState.value = photos
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _photoState.value = emptyList()
+        }
+    }
+
+    private fun <T> debounce(
+        timeMillis: Long = 300L,
+        coroutineScope: CoroutineScope,
+        block: suspend (T) -> Unit
+    ): (T) -> Unit {
+        var debounceJob: Job? = null
+        return { param: T ->
+            debounceJob?.cancel() // 이전 작업 취소
+            debounceJob = coroutineScope.launch {
+                delay(timeMillis)
+                block(param)
             }
         }
     }
