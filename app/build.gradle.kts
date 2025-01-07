@@ -32,6 +32,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            isDebuggable = true
         }
     }
     compileOptions {
@@ -64,6 +65,8 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.paging)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.profiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

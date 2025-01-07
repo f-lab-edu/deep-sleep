@@ -34,3 +34,23 @@ data class SinglePhoto(
     @SerializedName("user")
     val user: User?
 )
+
+fun singlePhotoExtention(singlePhoto: SinglePhoto): SinglePhoto{
+    return SinglePhoto(
+        id = singlePhoto?.id,
+        description = singlePhoto?.description,
+        color = singlePhoto?.color,
+        createdAt = singlePhoto?.createdAt,
+        downloads = 0,
+        height = 0,
+        width = 0,
+        blurHash = singlePhoto?.blurHash,
+        likedByUser = false,
+        likes = 0,
+        publicDomain = true,
+        updatedAt = singlePhoto?.updatedAt,
+        exif = singlePhoto?.exif,
+        urls = singlePhoto?.urls,
+        user = singlePhoto?.user
+    )
+}

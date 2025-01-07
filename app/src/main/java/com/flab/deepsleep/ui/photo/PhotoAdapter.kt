@@ -28,6 +28,7 @@ class PhotoAdapter :
         if (imageUrl != null) {
             Glide.with(holder.imageView.context)
                 .load(imageUrl)
+                .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.imageView)
         } else {
             holder.imageView.setImageResource(R.drawable.ic_launcher_foreground)
@@ -36,10 +37,11 @@ class PhotoAdapter :
 
     /* Paging */
     companion object {
-        val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<SinglePhoto>() {
+        private val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<SinglePhoto>() {
             override fun areItemsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean {
                 return oldItem.id == newItem.id
             }
+
             override fun areContentsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean {
                 return oldItem == newItem
             }
