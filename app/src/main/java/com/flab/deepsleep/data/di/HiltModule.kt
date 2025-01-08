@@ -2,6 +2,8 @@ package com.flab.deepsleep.data.di
 
 import com.flab.deepsleep.BuildConfig
 import com.flab.deepsleep.data.api.UnplashService
+import com.flab.deepsleep.data.repo.UnplashRepository
+import com.flab.deepsleep.data.repo.UnplashRepositoryImpl
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import dagger.Module
 import dagger.Provides
@@ -58,4 +60,9 @@ object HiltModule {
     fun provideUnplashService(retrofit: Retrofit): UnplashService {
         return HiltModule.retrofit.create(UnplashService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideUnplashRepository(): UnplashRepository =
+        UnplashRepositoryImpl(provideUnplashService(retrofit))
 }

@@ -10,7 +10,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.data.repo.UnplashRepositoryImpl
+import com.flab.deepsleep.data.repo.UnplashRepository
 import com.flab.deepsleep.data.source.PhotoPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoViewModel @Inject constructor(
-    private val unplashRepository: UnplashRepositoryImpl
+    private val unplashRepository: UnplashRepository
 ) : ViewModel() {
 
     /* Error */
