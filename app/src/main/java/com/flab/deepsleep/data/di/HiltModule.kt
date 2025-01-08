@@ -2,11 +2,11 @@ package com.flab.deepsleep.data.di
 
 import com.flab.deepsleep.BuildConfig
 import com.flab.deepsleep.data.api.UnplashService
+import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.nerdythings.okhttp.profiler.OkHttpProfilerInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
