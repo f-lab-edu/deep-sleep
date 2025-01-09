@@ -2,6 +2,7 @@ package com.flab.deepsleep
 
 import PhotoAdapter
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -11,10 +12,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.photo.PhotoViewModel
+import com.flab.deepsleep.utils.RecyclerItemClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,6 +27,20 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val photoRecyclerView: RecyclerView by lazy { binding.photosRecyclerView }
     private val photoAdapter: PhotoAdapter by lazy { PhotoAdapter() }
+
+    private fun setRecyclerView() {
+        photoRecyclerView.layoutManager = GridLayoutManager(this, 2)
+        photoRecyclerView.adapter = photoAdapter
+        photoRecyclerView.addOnItemTouchListener(
+            RecyclerItemClickListener(this, photoRecyclerView) { _, position ->
+                val photo = photoAdapter.snapshot()[position]
+                photo?.let {
+                    photoViewModel.insertPhoto(photo)
+                    Toast.makeText(this, "즐겨찾기 추가", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,17 +61,13 @@ class MainActivity : AppCompatActivity() {
             photoViewModel.searchPhotos(text.toString())
         }
 
+
         /* 에러 관찰 */
         photoViewModel.errorMessage.observe(this, Observer { it ->
             it?.let {
                 showErrorDialog(it)
             }
         })
-    }
-
-    private fun setRecyclerView() {
-        photoRecyclerView.layoutManager = LinearLayoutManager(this)
-        photoRecyclerView.adapter = photoAdapter
     }
 
     private fun showErrorDialog(message: String) {
@@ -67,5 +79,4 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
     }
-
 }

@@ -3,5 +3,9 @@
 
     <!--activity_main-->
     <string name="search">검색 입력</string>
+    <string name="test">테스트</string>
+
     <!--./-->
+
+    <dimen name="grid_spacing">8dp</dimen>
 </resources>

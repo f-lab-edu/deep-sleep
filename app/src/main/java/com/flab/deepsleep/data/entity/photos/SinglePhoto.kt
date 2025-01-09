@@ -1,5 +1,6 @@
 package com.flab.deepsleep.data.entity.photos
 
+import com.flab.deepsleep.data.entity.room.Photo
 import com.google.gson.annotations.SerializedName
 
 data class SinglePhoto(
@@ -33,24 +34,15 @@ data class SinglePhoto(
     val urls: Urls?,
     @SerializedName("user")
     val user: User?
-){
-    fun toDefault(singlePhoto: SinglePhoto): SinglePhoto{
-        return SinglePhoto(
-            id = singlePhoto?.id,
-            description = singlePhoto?.description,
-            color = singlePhoto?.color,
-            createdAt = singlePhoto?.createdAt,
-            downloads = 0,
-            height = 0,
-            width = 0,
-            blurHash = singlePhoto?.blurHash,
-            likedByUser = false,
-            likes = 0,
-            publicDomain = true,
-            updatedAt = singlePhoto?.updatedAt,
-            exif = singlePhoto?.exif,
-            urls = singlePhoto?.urls,
-            user = singlePhoto?.user
-        )
-    }
+)
+
+fun SinglePhoto.toPhoto(): Photo {
+    return Photo(
+        id = this.id?.toIntOrNull() ?: 0,
+        likes = this.likes,
+        urls = this.urls?.raw,
+        createdAt = this.createdAt,
+        username = this.user?.username,
+        isLike = true
+    )
 }

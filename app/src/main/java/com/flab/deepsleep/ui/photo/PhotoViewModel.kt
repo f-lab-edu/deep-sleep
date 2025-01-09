@@ -10,10 +10,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.data.repo.UnplashRepositoryImpl
+import com.flab.deepsleep.data.entity.photos.toPhoto
+import com.flab.deepsleep.data.entity.room.Photo
+import com.flab.deepsleep.data.repository.db.PhotoRepository
+import com.flab.deepsleep.data.repository.photo.UnplashRepositoryImpl
 import com.flab.deepsleep.data.source.PhotoPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoViewModel @Inject constructor(
-    private val unplashRepository: UnplashRepositoryImpl
+    private val unplashRepository: UnplashRepositoryImpl,
+    private val photoRepository: PhotoRepository
 ) : ViewModel() {
 
     /* Error */
@@ -35,6 +40,9 @@ class PhotoViewModel @Inject constructor(
     /* Paging Flow */
     private val _photoState = MutableLiveData<List<SinglePhoto>?>()
     val photoState: MutableLiveData<List<SinglePhoto>?> get() = _photoState
+
+    /* Photo Database */
+    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
 
     val items: Flow<PagingData<SinglePhoto>> = _photoState.asFlow()
         .map { state -> state ?: emptyList() }
@@ -51,32 +59,10 @@ class PhotoViewModel @Inject constructor(
         searchDebouncer(query)
     }
 
-    private val searchDebouncer = debounce<String>(
-        timeMillis = 300L,
-        coroutineScope = viewModelScope
-    ) { query ->
-        _photoState.value = null
-        try {
-            val photos = getSearchPhotos(query)
-            _photoState.value = photos
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _photoState.value = emptyList()
-        }
-    }
-
-    private fun <T> debounce(
-        timeMillis: Long = 300L,
-        coroutineScope: CoroutineScope,
-        block: suspend (T) -> Unit
-    ): (T) -> Unit {
-        var debounceJob: Job? = null
-        return { param: T ->
-            debounceJob?.cancel() // 이전 작업 취소
-            debounceJob = coroutineScope.launch {
-                delay(timeMillis)
-                block(param)
-            }
+    /* 즐겨찾기 추가 */
+    fun insertPhoto(singlePhoto: SinglePhoto) {
+        viewModelScope.launch(Dispatchers.IO) {
+            photoRepository.insertPhoto(singlePhoto.toPhoto())
         }
     }
 
@@ -99,4 +85,32 @@ class PhotoViewModel @Inject constructor(
         }
     }
 
+    private fun <T> debounce(
+        timeMillis: Long = 300L,
+        coroutineScope: CoroutineScope,
+        block: suspend (T) -> Unit
+    ): (T) -> Unit {
+        var debounceJob: Job? = null
+        return { param: T ->
+            debounceJob?.cancel() // 이전 작업 취소
+            debounceJob = coroutineScope.launch {
+                delay(timeMillis)
+                block(param)
+            }
+        }
+    }
+
+    private val searchDebouncer = debounce<String>(
+        timeMillis = 300L,
+        coroutineScope = viewModelScope
+    ) { query ->
+        _photoState.value = null
+        try {
+            val photos = getSearchPhotos(query)
+            _photoState.value = photos
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _photoState.value = emptyList()
+        }
+    }
 }

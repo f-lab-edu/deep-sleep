@@ -7,8 +7,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-    kotlin("kapt")
-
+    alias(libs.plugins.ksp)
 }
 android {
     namespace = "com.flab.deepsleep"
@@ -48,9 +47,8 @@ android {
     }
 }
 dependencies {
-    kapt(libs.hilt.android.compiler)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    ksp(libs.hilt.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.hilt.android)
@@ -67,6 +65,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
     implementation(libs.okhttp.profiler)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -76,15 +76,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-}
-kapt {
-    correctErrorTypes = true
-    useBuildCache = false
-    showProcessorStats = true
-
-    arguments {
-        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
-    }
 }
 hilt {
     enableAggregatingTask = false

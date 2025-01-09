@@ -1,4 +1,4 @@
-package com.flab.deepsleep.data.entity.search
+package com.flab.deepsleep.data.entity.photos
 import com.google.gson.annotations.SerializedName
 
 data class Results(
