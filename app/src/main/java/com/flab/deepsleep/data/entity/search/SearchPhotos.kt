@@ -8,6 +8,5 @@ data class SearchPhotos(
     val totalPages: Int,
     @SerializedName("results")
     val results: List<Results?>?
-
 )
 

@@ -2,66 +2,62 @@ package com.flab.deepsleep
 
 import PhotoAdapter
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.photo.PhotoViewModel
-import com.flab.deepsleep.utils.setOnTextChangedListener
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val photoViewModel: PhotoViewModel by viewModels()
-    private lateinit var binding: ActivityMainBinding
-    private val photoRecyclerView: RecyclerView by lazy {
-        binding.photosRecyclerView
-    }
-    private val photoAdapter: PhotoAdapter by lazy {
-        PhotoAdapter(emptyList())
-    }
-
+    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val photoRecyclerView: RecyclerView by lazy { binding.photosRecyclerView }
+    private val photoAdapter: PhotoAdapter by lazy { PhotoAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setRecyclerView()
 
-        /* 버튼 누르면 검색 */
-        val searchButton: ImageView = binding.searchButton
-        searchButton.setOnClickListener{
-            val query: String = binding.editText.text.toString()
-            photoViewModel.getSearchPhotos(query)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                photoViewModel.items.collectLatest {
+                    photoAdapter.submitData(it)
+                }
+            }
         }
 
-        photoViewModel.searchPhotosList.observe(this, Observer {
-            photoAdapter.updateData(it)
-            setupRecyclerView()
-        })
+        /* 검색어 입력시 자동 호출 */
+        binding.editText.doOnTextChanged { text, start, before, count ->
+            photoViewModel.searchPhotos(text.toString())
+        }
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(this, Observer {
-            it -> it?.let {
+        photoViewModel.errorMessage.observe(this, Observer { it ->
+            it?.let {
                 showErrorDialog(it)
             }
         })
-    }// ./onCreate()
+    }
 
-    private fun setupRecyclerView() {
+    private fun setRecyclerView() {
         photoRecyclerView.layoutManager = LinearLayoutManager(this)
         photoRecyclerView.adapter = photoAdapter
     }
+
     private fun showErrorDialog(message: String) {
         AlertDialog.Builder(this)
             .setTitle("Error")
@@ -70,7 +66,6 @@ class MainActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .show()
-
     }
 
 }

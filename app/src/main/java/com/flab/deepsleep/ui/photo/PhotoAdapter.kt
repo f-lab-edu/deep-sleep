@@ -2,12 +2,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
+import com.flab.deepsleep.data.entity.photos.SinglePhoto
 
-class PhotoAdapter(private var images: List<String?>) :
-    RecyclerView.Adapter<PhotoAdapter.ImageViewHolder>() {
+class PhotoAdapter :
+    PagingDataAdapter<SinglePhoto, PhotoAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.photoImageView)
@@ -20,17 +23,28 @@ class PhotoAdapter(private var images: List<String?>) :
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val imageUrl = images[position]
-        Glide.with(holder.imageView.context)
-            .load(imageUrl)
-            .into(holder.imageView)
+        val photo = getItem(position)
+        val imageUrl = photo?.urls?.raw
+        if (imageUrl != null) {
+            Glide.with(holder.imageView.context)
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(holder.imageView)
+        } else {
+            holder.imageView.setImageResource(R.drawable.ic_launcher_foreground)
+        }
     }
 
-    override fun getItemCount(): Int = images.size
+    /* Paging */
+    companion object {
+        private val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<SinglePhoto>() {
+            override fun areItemsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-    fun updateData(newPhotos: List<String?>) {
-        images = newPhotos
-        notifyDataSetChanged() // 데이터를 갱신
+            override fun areContentsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
-
 }

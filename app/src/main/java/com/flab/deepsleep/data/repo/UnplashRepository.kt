@@ -7,5 +7,4 @@ interface UnplashRepository {
     suspend fun getRandomPhotos(count: Int) : List<SinglePhoto>
     suspend fun getSearchPhotos(query: String) : SearchPhotos
     suspend fun getSinglePhotoById(photoId: String) : SinglePhoto
-
 }
