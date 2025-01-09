@@ -31,6 +31,7 @@ import javax.inject.Inject
 class PhotoViewModel @Inject constructor(
     private val unplashRepository: UnplashRepositoryImpl,
     private val photoRepository: PhotoRepository
+
 ) : ViewModel() {
 
     /* Error */
@@ -43,6 +44,7 @@ class PhotoViewModel @Inject constructor(
 
     /* Photo Database */
     val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
+
 
     val items: Flow<PagingData<SinglePhoto>> = _photoState.asFlow()
         .map { state -> state ?: emptyList() }
