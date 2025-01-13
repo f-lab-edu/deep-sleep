@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.example.app.READ_PERMISSION" />
+    <uses-permission android:name="com.example.app.WRITE_PERMISSION" />
 
     <application
         android:name=".MainApplication"
@@ -27,8 +29,7 @@
         <!-- 상세 페이지 -->
         <activity
             android:name=".ui.details.DetailsActivity"
-            android:exported="true" />
+            android:exported="false"/>
     </application>
-
 
 </manifest>
