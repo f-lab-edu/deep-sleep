@@ -70,17 +70,13 @@ class PhotoViewModel @Inject constructor(
 
     suspend fun getSearchPhotos(query: String): List<SinglePhoto>? {
         return try {
-            val searchPhotos = unplashRepository.getSearchPhotos(query)
-            val resultsList = searchPhotos.results?.filter { it?.description != null }
-            resultsList?.mapNotNull { result ->
-                result?.id?.let { photoId ->
-                    try {
-                        unplashRepository.getSinglePhotoById(photoId)
-                    } catch (e: Exception) {
-                        null
+            unplashRepository.getSearchPhotos(query)
+                .results
+                ?.mapNotNull { result ->
+                    result?.takeIf { it.description != null }?.id?.let { photoId ->
+                        runCatching { unplashRepository.getSinglePhotoById(photoId) }.getOrNull()
                     }
-                }
-            }
+                } ?: emptyList()
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
