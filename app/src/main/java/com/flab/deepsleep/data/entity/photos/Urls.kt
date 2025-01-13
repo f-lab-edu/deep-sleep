@@ -1,6 +1,7 @@
 package com.flab.deepsleep.data.entity.photos
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Urls(
     @SerializedName("full")
@@ -13,4 +14,4 @@ data class Urls(
     val small: String?,
     @SerializedName("thumb")
     val thumb: String?
-)
+) : Serializable

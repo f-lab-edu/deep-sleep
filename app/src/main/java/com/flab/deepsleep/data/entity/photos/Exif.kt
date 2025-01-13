@@ -1,6 +1,7 @@
 package com.flab.deepsleep.data.entity.photos
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Exif(
     @SerializedName("aperture")
@@ -17,4 +18,4 @@ data class Exif(
     val model: String?,
     @SerializedName("name")
     val name: String?
-)
+) : Serializable

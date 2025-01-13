@@ -34,7 +34,7 @@ data class SinglePhoto(
     val urls: Urls?,
     @SerializedName("user")
     val user: User?
-)
+) : java.io.Serializable
 
 fun SinglePhoto.toPhoto(): Photo {
     return Photo(

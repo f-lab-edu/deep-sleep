@@ -8,9 +8,9 @@ import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ItemPhotoBinding
-import timber.log.Timber
+import com.flab.deepsleep.ui.photo.onItemClick
 
-class PhotoAdapter :
+class PhotoAdapter(private val itemClick: onItemClick) :
     PagingDataAdapter<SinglePhoto, PhotoAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     inner class ImageViewHolder(
@@ -22,10 +22,6 @@ class PhotoAdapter :
         fun bind(photo: SinglePhoto) {
             itemView.tag = photo
 
-            /* Like Button */
-            btHeart.setOnClickListener {
-                itemView.performClick()
-            }
             val imageUrl = photo?.urls?.raw
             if (imageUrl != null) {
                 Glide.with(imageView.context)
@@ -47,6 +43,14 @@ class PhotoAdapter :
         val photo = getItem(position)
         photo?.let {
             holder.bind(photo)
+            holder.imageView.setOnClickListener {
+                itemClick.onPhotoClick(photo, position)
+            }
+
+            /* Like Button */
+            holder.btHeart.setOnClickListener {
+                itemClick.onButtonClick(photo, position)
+            }
         }
     }
 

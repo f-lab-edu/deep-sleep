@@ -1,6 +1,7 @@
 package com.flab.deepsleep.data.entity.photos
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class User(
     @SerializedName("bio")
@@ -23,4 +24,4 @@ data class User(
     val updatedAt: String?,
     @SerializedName("username")
     val username: String?
-)
+) : Serializable
