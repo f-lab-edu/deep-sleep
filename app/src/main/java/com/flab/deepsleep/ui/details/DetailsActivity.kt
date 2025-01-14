@@ -7,9 +7,11 @@ import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ActivityDetailsBinding
 import timber.log.Timber
+import java.text.NumberFormat
+import java.util.Locale
 
 class DetailsActivity : AppCompatActivity() {
-    val detailsBinding: ActivityDetailsBinding by lazy {
+    private val detailsBinding: ActivityDetailsBinding by lazy {
         ActivityDetailsBinding.inflate(
             layoutInflater
         )
@@ -19,14 +21,14 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(detailsBinding.root)
 
-        val singlePhoto = intent.getSerializableExtra("singlePhoto") as? SinglePhoto
+        val singlePhoto : SinglePhoto? = intent.getParcelableExtra<SinglePhoto>("singlePhoto")
 
         singlePhoto?.let {
             loadImage(it.urls?.raw)
             bindPhotoDetails(it)
         } ?: run {
             loadImage(null)
-            Timber.w("singlePhoto is null")
+            Timber.d("singlePhoto is null")
         }
     }
 
@@ -39,10 +41,12 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun bindPhotoDetails(photo: SinglePhoto) {
+        val numberFormat = NumberFormat.getNumberInstance(Locale.KOREA)
+        val result = numberFormat.format(photo.likes)
         detailsBinding.apply {
             detailDescription.text = photo.description ?: "No description available"
-            detailCreateAt.text = photo.createdAt ?: "Unknown date"
-            detailLikes.text = photo.likes.toString()
+            detailCreateAt.text = photo.createdAt?.take(10) ?: "Unknown date"
+            detailLikes.text = result
             detailUsername.text = photo.user?.username
         }
     }

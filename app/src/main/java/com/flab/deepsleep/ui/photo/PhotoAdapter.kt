@@ -8,21 +8,33 @@ import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ItemPhotoBinding
-import com.flab.deepsleep.ui.photo.onItemClick
+import com.flab.deepsleep.ui.photo.OnButtonClickListener
+import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
 
-class PhotoAdapter(private val itemClick: onItemClick) :
+class PhotoAdapter(
+    private val buttonClick: OnButtonClickListener,
+    private val onPhotoItemClickListener: OnPhotoItemClickListener
+) :
     PagingDataAdapter<SinglePhoto, PhotoAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     inner class ImageViewHolder(
         private val binding: ItemPhotoBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        val imageView: ImageView = binding.photoImageView
-        val btHeart: ImageView = binding.btHeart
+        private val imageView: ImageView = binding.photoImageView
 
         fun bind(photo: SinglePhoto) {
             itemView.tag = photo
 
-            val imageUrl = photo?.urls?.raw
+            /* Like Button */
+            binding.btHeart.setOnClickListener {
+                buttonClick.onButtonClick(photo)
+            }
+
+            imageView.setOnClickListener {
+                onPhotoItemClickListener.onPhotoItemClick(photo)
+            }
+
+            val imageUrl = photo.urls?.raw
             if (imageUrl != null) {
                 Glide.with(imageView.context)
                     .load(imageUrl)
@@ -43,14 +55,6 @@ class PhotoAdapter(private val itemClick: onItemClick) :
         val photo = getItem(position)
         photo?.let {
             holder.bind(photo)
-            holder.imageView.setOnClickListener {
-                itemClick.onPhotoClick(photo, position)
-            }
-
-            /* Like Button */
-            holder.btHeart.setOnClickListener {
-                itemClick.onButtonClick(photo, position)
-            }
         }
     }
 

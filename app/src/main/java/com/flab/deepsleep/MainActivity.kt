@@ -9,26 +9,36 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.details.DetailsActivity
 import com.flab.deepsleep.ui.photo.PhotoViewModel
-import com.flab.deepsleep.ui.photo.onItemClick
+import com.flab.deepsleep.ui.photo.OnButtonClickListener
+import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), onItemClick {
+class MainActivity : AppCompatActivity() {
     private val photoViewModel: PhotoViewModel by viewModels()
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val photoRecyclerView: RecyclerView by lazy { binding.photosRecyclerView }
-    private val photoAdapter: PhotoAdapter by lazy { PhotoAdapter(this) }
+    private val buttonClick = OnButtonClickListener { singlePhoto ->
+        photoViewModel.insertPhoto(singlePhoto)
+    }
+    private val onPhotoItemClickListener =
+        OnPhotoItemClickListener { singlePhoto ->
+            val intent = Intent(this@MainActivity, DetailsActivity::class.java)
+            intent.putExtra("singlePhoto", singlePhoto)  // 객체 전달
+            startActivity(intent)
+        }
+    private val photoAdapter: PhotoAdapter by lazy {
+        PhotoAdapter(buttonClick, onPhotoItemClickListener)
+    }
 
     private fun setRecyclerView() {
         photoRecyclerView.layoutManager = GridLayoutManager(this, 2)
@@ -55,11 +65,11 @@ class MainActivity : AppCompatActivity(), onItemClick {
         }
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(this, Observer { it ->
+        photoViewModel.errorMessage.observe(/* owner = */ this) { it ->
             it?.let {
                 showErrorDialog(it)
             }
-        })
+        }
     }
 
     private fun showErrorDialog(message: String) {
@@ -70,17 +80,5 @@ class MainActivity : AppCompatActivity(), onItemClick {
                 dialog.dismiss()
             }
             .show()
-    }
-
-    override fun onButtonClick(singlePhoto: SinglePhoto, position: Int) {
-        /* 즐겨찾기 추가 */
-        photoViewModel.insertPhoto(singlePhoto)
-    }
-
-    override fun onPhotoClick(singlePhoto: SinglePhoto, position: Int) {
-        // TODO : 상세페이지 진입
-        val intent = Intent(this, DetailsActivity::class.java)
-        intent.putExtra("singlePhoto", singlePhoto)  // 객체 전달
-        startActivity(intent)
     }
 }
