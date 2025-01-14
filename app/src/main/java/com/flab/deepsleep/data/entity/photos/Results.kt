@@ -1,4 +1,6 @@
 package com.flab.deepsleep.data.entity.photos
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class Results(
@@ -22,4 +24,43 @@ data class Results(
     val width: Int,
     @SerializedName("user")
     val user: SearchUser?
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readInt(),
+        parcel.readInt(),
+        TODO("user")
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(blurHash)
+        parcel.writeString(color)
+        parcel.writeString(createdAt)
+        parcel.writeString(description)
+        parcel.writeInt(height)
+        parcel.writeString(id)
+        parcel.writeByte(if (likedByUser) 1 else 0)
+        parcel.writeInt(likes)
+        parcel.writeInt(width)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Results> {
+        override fun createFromParcel(parcel: Parcel): Results {
+            return Results(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Results?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

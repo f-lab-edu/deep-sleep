@@ -2,8 +2,6 @@ package com.flab.deepsleep
 
 import PhotoAdapter
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -18,18 +16,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.photo.PhotoViewModel
-import com.flab.deepsleep.ui.photo.onItemClick
+import com.flab.deepsleep.ui.photo.OnButtonClick
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), onItemClick {
+class MainActivity : AppCompatActivity() {
     private val photoViewModel: PhotoViewModel by viewModels()
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val photoRecyclerView: RecyclerView by lazy { binding.photosRecyclerView }
-    private val photoAdapter: PhotoAdapter by lazy { PhotoAdapter(this) }
+    private val photoAdapter: PhotoAdapter by lazy {
+        PhotoAdapter { singlePhoto ->
+            photoViewModel.insertPhoto(singlePhoto)
+        }
+    }
 
     private fun setRecyclerView() {
         photoRecyclerView.layoutManager = GridLayoutManager(this, 2)
@@ -56,11 +58,11 @@ class MainActivity : AppCompatActivity(), onItemClick {
         }
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(this, Observer { it ->
+        photoViewModel.errorMessage.observe(/* owner = */ this) { it ->
             it?.let {
                 showErrorDialog(it)
             }
-        })
+        }
     }
 
     private fun showErrorDialog(message: String) {
@@ -71,9 +73,5 @@ class MainActivity : AppCompatActivity(), onItemClick {
                 dialog.dismiss()
             }
             .show()
-    }
-
-    override fun onClick(singlePhoto: SinglePhoto, position: Int) {
-        Timber.d("" + singlePhoto)
     }
 }

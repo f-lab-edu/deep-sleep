@@ -8,19 +8,23 @@ import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ItemPhotoBinding
-import com.flab.deepsleep.ui.photo.onItemClick
+import com.flab.deepsleep.ui.photo.OnButtonClick
 
-class PhotoAdapter(private val itemClick: onItemClick) :
+class PhotoAdapter(private val buttonClick: OnButtonClick) :
     PagingDataAdapter<SinglePhoto, PhotoAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     inner class ImageViewHolder(
         private val binding: ItemPhotoBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        val imageView: ImageView = binding.photoImageView
-        val btHeart: ImageView = binding.btHeart
+        private val imageView: ImageView = binding.photoImageView
 
         fun bind(photo: SinglePhoto) {
             itemView.tag = photo
+
+            /* Like Button */
+            binding.btHeart.setOnClickListener {
+                buttonClick.onButtonClick(photo)
+            }
 
             val imageUrl = photo?.urls?.raw
             if (imageUrl != null) {
@@ -43,11 +47,6 @@ class PhotoAdapter(private val itemClick: onItemClick) :
         val photo = getItem(position)
         photo?.let {
             holder.bind(photo)
-
-            /* Like Button */
-            holder.btHeart.setOnClickListener {
-                itemClick.onClick(photo, position)
-            }
         }
     }
 
