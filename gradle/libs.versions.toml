@@ -27,6 +27,7 @@ okhttp = "4.12.0"
 okhttp-profiler = "1.0.8"
 room = "2.6.1"
 ksp = "2.0.21-1.0.27"
+fragment-ktx = "1.8.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,6 +59,7 @@ okhttp-profiler = { module = "com.localebro:okhttpprofiler", version.ref = "okht
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment-ktx"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

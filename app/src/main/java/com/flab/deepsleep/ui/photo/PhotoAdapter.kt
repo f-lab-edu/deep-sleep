@@ -26,7 +26,7 @@ class PhotoAdapter(private val buttonClick: OnButtonClick) :
                 buttonClick.onButtonClick(photo)
             }
 
-            val imageUrl = photo?.urls?.raw
+            val imageUrl = photo.urls?.raw
             if (imageUrl != null) {
                 Glide.with(imageView.context)
                     .load(imageUrl)

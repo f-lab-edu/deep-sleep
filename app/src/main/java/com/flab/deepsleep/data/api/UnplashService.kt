@@ -1,20 +1,17 @@
 package com.flab.deepsleep.data.api
 
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
-
 import com.flab.deepsleep.data.entity.photos.SearchPhotos
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UnplashService {
-
     @GET("/photos/random")
     suspend fun getRandomPhotos(
         @Query("client_id") clientId: String,
         @Query("count") count: Int = 1
     ): List<SinglePhoto>
-
 
     @GET("/search/photos")
     suspend fun getSearchPhotos(
@@ -27,6 +24,4 @@ interface UnplashService {
         @Path("id") photoId: String,
         @Query("client_id") clientId: String
     ): SinglePhoto
-
-
 }

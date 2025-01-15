@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.okhttp.profiler)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.fragment.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

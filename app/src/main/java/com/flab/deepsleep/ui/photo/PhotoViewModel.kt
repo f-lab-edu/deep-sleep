@@ -18,6 +18,7 @@ import com.flab.deepsleep.data.source.PhotoPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -44,10 +45,7 @@ class PhotoViewModel @Inject constructor(
     private val _photoState = MutableLiveData<List<SinglePhoto>?>()
     val photoState: MutableLiveData<List<SinglePhoto>?> get() = _photoState
 
-    /* Photo Database */
-    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
-
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     val items: Flow<PagingData<SinglePhoto>> = _photoState.asFlow()
         .map { state -> state ?: emptyList() }
         .flatMapLatest { photos ->
@@ -70,7 +68,7 @@ class PhotoViewModel @Inject constructor(
         }
     }
 
-    suspend fun getSearchPhotos(query: String): List<SinglePhoto> {
+    private suspend fun getSearchPhotos(query: String): List<SinglePhoto> {
         return coroutineScope {
             try {
                 unplashRepository.getSearchPhotos(query)
