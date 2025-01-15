@@ -1,11 +1,9 @@
 package com.flab.deepsleep.data.entity.photos
-
 import android.os.Parcel
 import android.os.Parcelable
-import com.flab.deepsleep.data.entity.room.Photo
 import com.google.gson.annotations.SerializedName
 
-data class SinglePhoto(
+data class Results(
     @SerializedName("blur_hash")
     val blurHash: String?,
     @SerializedName("color")
@@ -14,28 +12,18 @@ data class SinglePhoto(
     val createdAt: String?,
     @SerializedName("description")
     val description: String?,
-    @SerializedName("downloads")
-    val downloads: Int,
     @SerializedName("height")
     val height: Int,
     @SerializedName("id")
     val id: String?,
     @SerializedName("liked_by_user")
-    val likedByUser: Boolean?,
+    val likedByUser: Boolean,
     @SerializedName("likes")
     val likes: Int,
-    @SerializedName("public_domain")
-    val publicDomain: Boolean?,
-    @SerializedName("updated_at")
-    val updatedAt: String?,
     @SerializedName("width")
     val width: Int,
-    @SerializedName("exif")
-    val exif: Exif?,
-    @SerializedName("urls")
-    val urls: Urls?,
     @SerializedName("user")
-    val user: User?
+    val user: SearchUser?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -43,15 +31,10 @@ data class SinglePhoto(
         parcel.readString(),
         parcel.readString(),
         parcel.readInt(),
-        parcel.readInt(),
         parcel.readString(),
-        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+        parcel.readByte() != 0.toByte(),
         parcel.readInt(),
-        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-        parcel.readString(),
         parcel.readInt(),
-        TODO("exif"),
-        TODO("urls"),
         TODO("user")
     )
 
@@ -60,13 +43,10 @@ data class SinglePhoto(
         parcel.writeString(color)
         parcel.writeString(createdAt)
         parcel.writeString(description)
-        parcel.writeInt(downloads)
         parcel.writeInt(height)
         parcel.writeString(id)
-        parcel.writeValue(likedByUser)
+        parcel.writeByte(if (likedByUser) 1 else 0)
         parcel.writeInt(likes)
-        parcel.writeValue(publicDomain)
-        parcel.writeString(updatedAt)
         parcel.writeInt(width)
     }
 
@@ -74,24 +54,13 @@ data class SinglePhoto(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<SinglePhoto> {
-        override fun createFromParcel(parcel: Parcel): SinglePhoto {
-            return SinglePhoto(parcel)
+    companion object CREATOR : Parcelable.Creator<Results> {
+        override fun createFromParcel(parcel: Parcel): Results {
+            return Results(parcel)
         }
 
-        override fun newArray(size: Int): Array<SinglePhoto?> {
+        override fun newArray(size: Int): Array<Results?> {
             return arrayOfNulls(size)
         }
     }
-}
-
-fun SinglePhoto.toPhoto(): Photo {
-    return Photo(
-        id = this.id?.toIntOrNull() ?: 0,
-        likes = this.likes,
-        urls = this.urls?.raw,
-        createdAt = this.createdAt,
-        username = this.user?.username,
-        isLike = true
-    )
 }

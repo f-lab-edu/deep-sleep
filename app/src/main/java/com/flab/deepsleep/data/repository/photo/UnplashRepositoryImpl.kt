@@ -1,9 +1,9 @@
-package com.flab.deepsleep.data.repo
+package com.flab.deepsleep.data.repository.photo
 
 import com.flab.deepsleep.BuildConfig
 import com.flab.deepsleep.data.api.UnplashService
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.data.entity.search.SearchPhotos
+import com.flab.deepsleep.data.entity.photos.SearchPhotos
 import javax.inject.Inject
 
 class UnplashRepositoryImpl @Inject constructor(private val unplashService: UnplashService) :

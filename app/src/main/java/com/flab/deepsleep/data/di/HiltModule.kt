@@ -1,13 +1,16 @@
 package com.flab.deepsleep.data.di
 
+import android.content.Context
 import com.flab.deepsleep.BuildConfig
 import com.flab.deepsleep.data.api.UnplashService
-import com.flab.deepsleep.data.repo.UnplashRepository
-import com.flab.deepsleep.data.repo.UnplashRepositoryImpl
+import com.flab.deepsleep.data.entity.room.AppDatabase
+import com.flab.deepsleep.data.repository.db.PhotoRepository
+import com.flab.deepsleep.data.repository.db.OffLinePhotoRepository
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -61,8 +64,16 @@ object HiltModule {
         return HiltModule.retrofit.create(UnplashService::class.java)
     }
 
+    /*-- Room Database --*/
     @Provides
     @Singleton
-    fun provideUnplashRepository(): UnplashRepository =
-        UnplashRepositoryImpl(provideUnplashService(retrofit))
+    fun provideItemsRepository(database: AppDatabase): PhotoRepository {
+        return OffLinePhotoRepository(database.photoDao())
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+        return AppDatabase.getDatabase(context)
+    }
 }

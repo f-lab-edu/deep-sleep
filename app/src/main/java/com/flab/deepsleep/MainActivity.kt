@@ -11,20 +11,32 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.photo.PhotoViewModel
+import com.flab.deepsleep.ui.photo.OnButtonClick
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val photoViewModel: PhotoViewModel by viewModels()
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val photoRecyclerView: RecyclerView by lazy { binding.photosRecyclerView }
-    private val photoAdapter: PhotoAdapter by lazy { PhotoAdapter() }
+    private val photoAdapter: PhotoAdapter by lazy {
+        PhotoAdapter { singlePhoto ->
+            photoViewModel.insertPhoto(singlePhoto)
+        }
+    }
+
+    private fun setRecyclerView() {
+        photoRecyclerView.layoutManager = GridLayoutManager(this, 2)
+        photoRecyclerView.adapter = photoAdapter
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,16 +58,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(this, Observer { it ->
+        photoViewModel.errorMessage.observe(/* owner = */ this) { it ->
             it?.let {
                 showErrorDialog(it)
             }
-        })
-    }
-
-    private fun setRecyclerView() {
-        photoRecyclerView.layoutManager = LinearLayoutManager(this)
-        photoRecyclerView.adapter = photoAdapter
+        }
     }
 
     private fun showErrorDialog(message: String) {
@@ -67,5 +74,4 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
     }
-
 }
