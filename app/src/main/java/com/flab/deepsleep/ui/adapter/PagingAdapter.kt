@@ -1,3 +1,5 @@
+package com.flab.deepsleep.ui.adapter
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -10,8 +12,8 @@ import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ItemPhotoBinding
 import com.flab.deepsleep.ui.photo.OnButtonClick
 
-class PhotoAdapter(private val buttonClick: OnButtonClick) :
-    PagingDataAdapter<SinglePhoto, PhotoAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
+class PagingAdapter(private val buttonClick: OnButtonClick) :
+    PagingDataAdapter<SinglePhoto, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     inner class ImageViewHolder(
         private val binding: ItemPhotoBinding,
