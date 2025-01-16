@@ -1,10 +1,11 @@
 package com.flab.deepsleep.data.entity.photos
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.flab.deepsleep.data.entity.room.Photo
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class SinglePhoto(
     @SerializedName("blur_hash")
     val blurHash: String?,
@@ -36,54 +37,7 @@ data class SinglePhoto(
     val urls: Urls?,
     @SerializedName("user")
     val user: User?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readString(),
-        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-        parcel.readInt(),
-        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-        parcel.readString(),
-        parcel.readInt(),
-        TODO("exif"),
-        TODO("urls"),
-        TODO("user")
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(blurHash)
-        parcel.writeString(color)
-        parcel.writeString(createdAt)
-        parcel.writeString(description)
-        parcel.writeInt(downloads)
-        parcel.writeInt(height)
-        parcel.writeString(id)
-        parcel.writeValue(likedByUser)
-        parcel.writeInt(likes)
-        parcel.writeValue(publicDomain)
-        parcel.writeString(updatedAt)
-        parcel.writeInt(width)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<SinglePhoto> {
-        override fun createFromParcel(parcel: Parcel): SinglePhoto {
-            return SinglePhoto(parcel)
-        }
-
-        override fun newArray(size: Int): Array<SinglePhoto?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 fun SinglePhoto.toPhoto(): Photo {
     return Photo(

@@ -1,7 +1,6 @@
 package com.flab.deepsleep
 
 import PhotoAdapter
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -32,9 +31,7 @@ class MainActivity : AppCompatActivity() {
     }
     private val onPhotoItemClickListener =
         OnPhotoItemClickListener { singlePhoto ->
-            val intent = Intent(this@MainActivity, DetailsActivity::class.java)
-            intent.putExtra("singlePhoto", singlePhoto)  // 객체 전달
-            startActivity(intent)
+            DetailsActivity.startDetailsActivity(this, singlePhoto)
         }
     private val photoAdapter: PhotoAdapter by lazy {
         PhotoAdapter(buttonClick, onPhotoItemClickListener)
@@ -65,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(/* owner = */ this) { it ->
+        photoViewModel.errorMessage.observe(this) { it ->
             it?.let {
                 showErrorDialog(it)
             }

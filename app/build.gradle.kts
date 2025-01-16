@@ -8,11 +8,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.parcelize)
 }
 android {
     namespace = "com.flab.deepsleep"
     compileSdk = 35
-
     defaultConfig {
         applicationId = "com.flab.deepsleep"
         minSdk = 24
@@ -23,6 +23,12 @@ android {
         val unsplashAccessKey = localProperties.getProperty("UNSPLASH_ACCESS_KEY") ?: ""
         buildConfigField("String", "UNSPLASH_ACCESS_KEY", "\"$unsplashAccessKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.schemaLocation"] = "$projectDir/schemas"
+            }
+        }
     }
     buildTypes {
         release {

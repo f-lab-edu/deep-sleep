@@ -1,5 +1,7 @@
 package com.flab.deepsleep.ui.details
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -12,16 +14,15 @@ import java.util.Locale
 
 class DetailsActivity : AppCompatActivity() {
     private val detailsBinding: ActivityDetailsBinding by lazy {
-        ActivityDetailsBinding.inflate(
-            layoutInflater
-        )
+        ActivityDetailsBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(detailsBinding.root)
 
-        val singlePhoto : SinglePhoto? = intent.getParcelableExtra<SinglePhoto>("singlePhoto")
+        val singlePhoto: SinglePhoto? =
+            @Suppress("DEPRECATION") intent.getParcelableExtra("singlePhoto")
 
         singlePhoto?.let {
             loadImage(it.urls?.raw)
@@ -48,6 +49,15 @@ class DetailsActivity : AppCompatActivity() {
             detailCreateAt.text = photo.createdAt?.take(10) ?: "Unknown date"
             detailLikes.text = result
             detailUsername.text = photo.user?.username
+        }
+    }
+
+    companion object {
+        fun startDetailsActivity(context: Context, singlePhoto: SinglePhoto) {
+            val intent = Intent(context, DetailsActivity::class.java).apply {
+                putExtra("singlePhoto", singlePhoto)
+            }
+            context.startActivity(intent)
         }
     }
 }
