@@ -19,6 +19,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -31,7 +34,6 @@ import javax.inject.Inject
 class PhotoViewModel @Inject constructor(
     private val unplashRepository: UnplashRepositoryImpl,
     private val photoRepository: PhotoRepository
-
 ) : ViewModel() {
 
     /* Error */
@@ -68,22 +70,25 @@ class PhotoViewModel @Inject constructor(
         }
     }
 
-    suspend fun getSearchPhotos(query: String): List<SinglePhoto>? {
-        return try {
-            val searchPhotos = unplashRepository.getSearchPhotos(query)
-            val resultsList = searchPhotos.results?.filter { it?.description != null }
-            resultsList?.mapNotNull { result ->
-                result?.id?.let { photoId ->
-                    try {
-                        unplashRepository.getSinglePhotoById(photoId)
-                    } catch (e: Exception) {
-                        null
-                    }
-                }
+    suspend fun getSearchPhotos(query: String): List<SinglePhoto> {
+        return coroutineScope {
+            try {
+                unplashRepository.getSearchPhotos(query)
+                    .results
+                    ?.mapNotNull { result ->
+                        async {
+                            result?.takeIf { it.description != null }?.id?.let { photoId ->
+                                runCatching {
+                                    unplashRepository.getSinglePhotoById(photoId)
+                                }.getOrNull()
+                            }
+                        }
+                    }?.awaitAll()?.filterNotNull() ?: emptyList()
+            } catch (e: Exception) {
+                e.printStackTrace()
+
+                emptyList()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
         }
     }
 

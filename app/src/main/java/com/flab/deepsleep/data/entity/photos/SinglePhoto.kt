@@ -50,23 +50,10 @@ data class SinglePhoto(
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readString(),
         parcel.readInt(),
-        parcel.readParcelable(Exif::class.java.classLoader),
-        parcel.readParcelable(Urls::class.java.classLoader),
-        parcel.readParcelable(User::class.java.classLoader)
+        TODO("exif"),
+        TODO("urls"),
+        TODO("user")
     )
-    companion object CREATOR : Parcelable.Creator<SinglePhoto> {
-        override fun createFromParcel(parcel: Parcel): SinglePhoto {
-            return SinglePhoto(parcel)
-        }
-
-        override fun newArray(size: Int): Array<SinglePhoto?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(blurHash)
@@ -81,9 +68,20 @@ data class SinglePhoto(
         parcel.writeValue(publicDomain)
         parcel.writeString(updatedAt)
         parcel.writeInt(width)
-        parcel.writeParcelable(exif, flags)
-        parcel.writeParcelable(urls, flags)
-        parcel.writeParcelable(user, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<SinglePhoto> {
+        override fun createFromParcel(parcel: Parcel): SinglePhoto {
+            return SinglePhoto(parcel)
+        }
+
+        override fun newArray(size: Int): Array<SinglePhoto?> {
+            return arrayOfNulls(size)
+        }
     }
 }
 

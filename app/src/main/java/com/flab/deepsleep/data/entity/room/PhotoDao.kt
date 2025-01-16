@@ -13,7 +13,7 @@ interface PhotoDao {
     fun getAll(): Flow<List<Photo>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(vararg like: Photo)
+    suspend fun insert(vararg like: Photo)
 
     @Delete
     suspend fun delete(like: Photo)
