@@ -11,7 +11,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.data.entity.photos.toPhoto
-import com.flab.deepsleep.data.entity.room.Photo
 import com.flab.deepsleep.data.repository.db.PhotoRepository
 import com.flab.deepsleep.data.repository.photo.UnplashRepositoryImpl
 import com.flab.deepsleep.data.source.PhotoPagingSource
@@ -24,11 +23,11 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @HiltViewModel
 class PhotoViewModel @Inject constructor(
@@ -42,12 +41,6 @@ class PhotoViewModel @Inject constructor(
 
     /* Paging Flow */
     private val _photoState = MutableLiveData<List<SinglePhoto>?>()
-    val photoState: MutableLiveData<List<SinglePhoto>?> get() = _photoState
-
-    /* Photo Database */
-    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
-
-
     val items: Flow<PagingData<SinglePhoto>> = _photoState.asFlow()
         .map { state -> state ?: emptyList() }
         .flatMapLatest { photos ->
@@ -58,10 +51,9 @@ class PhotoViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
-    /* 사진 검색 */
-    fun searchPhotos(query: String) {
-        searchDebouncer(query)
-    }
+    /* Bookmark */
+    private val _isLiked = MutableLiveData<Boolean>()
+    val isLiked: LiveData<Boolean> get() = _isLiked
 
     /* 즐겨찾기 추가 */
     fun insertPhoto(singlePhoto: SinglePhoto) {
@@ -70,7 +62,22 @@ class PhotoViewModel @Inject constructor(
         }
     }
 
-    suspend fun getSearchPhotos(query: String): List<SinglePhoto> {
+    fun loadPhotoLikeStatus(photoId: String) {
+        viewModelScope.launch {
+            photoRepository.getSinglePhoto(photoId).collectLatest { photo ->
+                photo?.let {
+                    _isLiked.postValue(photo.isLike)
+                }
+            }
+        }
+    }
+
+    /* 사진 검색 */
+    fun searchPhotos(query: String) {
+        searchDebouncer(query)
+    }
+
+    private suspend fun getSearchPhotos(query: String): List<SinglePhoto> {
         return coroutineScope {
             try {
                 unplashRepository.getSearchPhotos(query)

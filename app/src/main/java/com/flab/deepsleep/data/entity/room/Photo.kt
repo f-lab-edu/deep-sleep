@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "photo")
 data class Photo(
     @PrimaryKey(autoGenerate = true) val pk: Int = 0,
-    @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "id") val id: String?,
     @ColumnInfo(name = "likes") val likes: Int,
     @ColumnInfo(name = "urls") val urls: String?,
     @ColumnInfo(name = "created_at") val createdAt: String?,

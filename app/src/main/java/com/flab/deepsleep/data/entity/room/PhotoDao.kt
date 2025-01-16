@@ -12,6 +12,9 @@ interface PhotoDao {
     @Query("SELECT * FROM `photo` order by pk DESC")
     fun getAll(): Flow<List<Photo>>
 
+    @Query("SELECT * from photo WHERE id = :id")
+    fun getPhoto(id: String): Flow<Photo>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(vararg like: Photo)
 

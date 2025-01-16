@@ -3,19 +3,24 @@ package com.flab.deepsleep.ui.details
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ActivityDetailsBinding
+import com.flab.deepsleep.ui.photo.PhotoViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.NumberFormat
 import java.util.Locale
 
+@AndroidEntryPoint
 class DetailsActivity : AppCompatActivity() {
     private val detailsBinding: ActivityDetailsBinding by lazy {
         ActivityDetailsBinding.inflate(layoutInflater)
     }
+    private val photoViewModel: PhotoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +32,14 @@ class DetailsActivity : AppCompatActivity() {
         singlePhoto?.let {
             loadImage(it.urls?.raw)
             bindPhotoDetails(it)
+            singlePhoto.id?.let { photoViewModel.loadPhotoLikeStatus(it) }
         } ?: run {
             loadImage(null)
             Timber.d("singlePhoto is null")
+        }
+
+        photoViewModel.isLiked.observe(this) { isLiked ->
+            detailsBinding.detailBtHeart.isSelected = isLiked
         }
     }
 
@@ -41,14 +51,18 @@ class DetailsActivity : AppCompatActivity() {
             .into(detailsBinding.detailsImageView)
     }
 
-    private fun bindPhotoDetails(photo: SinglePhoto) {
+    private fun bindPhotoDetails(singlePhoto: SinglePhoto) {
         val numberFormat = NumberFormat.getNumberInstance(Locale.KOREA)
-        val result = numberFormat.format(photo.likes)
+        val result = numberFormat.format(singlePhoto.likes)
         detailsBinding.apply {
-            detailDescription.text = photo.description ?: "No description available"
-            detailCreateAt.text = photo.createdAt?.take(10) ?: "Unknown date"
+            detailDescription.text = singlePhoto.description ?: "No description available"
+            detailCreateAt.text = singlePhoto.createdAt?.take(10) ?: "Unknown date"
             detailLikes.text = result
-            detailUsername.text = photo.user?.username
+            detailUsername.text = singlePhoto.user?.username
+        }
+
+        detailsBinding.detailBtHeart.setOnClickListener {
+            photoViewModel.insertPhoto(singlePhoto)
         }
     }
 

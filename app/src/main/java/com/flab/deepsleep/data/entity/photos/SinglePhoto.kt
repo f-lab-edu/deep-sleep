@@ -41,7 +41,7 @@ data class SinglePhoto(
 
 fun SinglePhoto.toPhoto(): Photo {
     return Photo(
-        id = this.id?.toIntOrNull() ?: 0,
+        id = this.id,
         likes = this.likes,
         urls = this.urls?.raw,
         createdAt = this.createdAt,

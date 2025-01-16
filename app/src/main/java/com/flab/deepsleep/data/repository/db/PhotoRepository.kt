@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PhotoRepository {
     fun getAllPhotos(): Flow<List<Photo>>
+    fun getSinglePhoto(id: String): Flow<Photo?>
     suspend fun insertPhoto(photo: Photo)
     suspend fun deletePhoto(photo: Photo)
 }
