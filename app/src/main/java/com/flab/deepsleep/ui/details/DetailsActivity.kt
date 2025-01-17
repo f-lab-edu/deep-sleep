@@ -67,7 +67,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun startDetailsActivity(context: Context, singlePhoto: SinglePhoto) {
+        fun startActivity(context: Context, singlePhoto: SinglePhoto) {
             val intent = Intent(context, DetailsActivity::class.java).apply {
                 putExtra("singlePhoto", singlePhoto)
             }

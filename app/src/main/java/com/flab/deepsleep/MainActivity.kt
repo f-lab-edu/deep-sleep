@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     }
     private val onPhotoItemClickListener =
         OnPhotoItemClickListener { singlePhoto ->
-            DetailsActivity.startDetailsActivity(this, singlePhoto)
+            DetailsActivity.startActivity(this, singlePhoto)
         }
     private val photoAdapter: PhotoAdapter by lazy {
         PhotoAdapter(buttonClick, onPhotoItemClickListener)

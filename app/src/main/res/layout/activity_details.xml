@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -47,7 +47,7 @@
                     android:id="@+id/detail_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10sp"
+                    android:layout_margin="10dp"
                     android:hint="@string/test"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/selector_bt_heart"
-                    android:background="@null"
                     app:layout_constraintBottom_toBottomOf="@+id/detail_description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/detail_description" />
@@ -101,6 +100,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/detail_likes" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
