@@ -9,6 +9,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.data.entity.photos.toPhoto
 import com.flab.deepsleep.data.repository.db.PhotoRepository
@@ -24,6 +25,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -39,6 +41,8 @@ class PhotoViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
+    private val savedPhotos = photoRepository.getAllPhotos() // Room Flow API 사용
+
     /* Paging Flow */
     private val _photoState = MutableLiveData<List<SinglePhoto>?>()
     val items: Flow<PagingData<SinglePhoto>> = _photoState.asFlow()
@@ -49,7 +53,18 @@ class PhotoViewModel @Inject constructor(
                 pagingSourceFactory = { PhotoPagingSource(photos) }
             ).flow
         }
+        .combine(savedPhotos) { pagingData, savedPhotos ->
+            pagingData.map { photo ->
+                val savedPhoto = savedPhotos.find { it.id == photo.id }
+                if (savedPhoto != null) {
+                    photo.copy(isLike = savedPhoto.isLike)
+                } else {
+                    photo
+                }
+            }
+        }
         .cachedIn(viewModelScope)
+
 
     /* Bookmark */
     private val _isLiked = MutableLiveData<Boolean>()
@@ -58,6 +73,7 @@ class PhotoViewModel @Inject constructor(
     /* 즐겨찾기 추가 */
     fun insertPhoto(singlePhoto: SinglePhoto) {
         viewModelScope.launch(Dispatchers.IO) {
+            singlePhoto.isLike = true
             photoRepository.insertPhoto(singlePhoto.toPhoto())
         }
     }

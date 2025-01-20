@@ -1,15 +1,18 @@
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
+import com.flab.deepsleep.data.entity.photos.toPhoto
 import com.flab.deepsleep.databinding.ItemPhotoBinding
 import com.flab.deepsleep.ui.photo.OnButtonClickListener
 import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
+import timber.log.Timber
 
 class PhotoAdapter(
     private val buttonClick: OnButtonClickListener,
@@ -24,6 +27,7 @@ class PhotoAdapter(
 
         fun bind(photo: SinglePhoto) {
             itemView.tag = photo
+            binding.btHeart.isSelected = photo.isLike
 
             /* Like Button */
             binding.btHeart.setOnClickListener {

@@ -36,7 +36,8 @@ data class SinglePhoto(
     @SerializedName("urls")
     val urls: Urls?,
     @SerializedName("user")
-    val user: User?
+    val user: User?,
+    var isLike: Boolean = false
 ) : Parcelable
 
 fun SinglePhoto.toPhoto(): Photo {
@@ -46,6 +47,6 @@ fun SinglePhoto.toPhoto(): Photo {
         urls = this.urls?.raw,
         createdAt = this.createdAt,
         username = this.user?.username,
-        isLike = true
+        isLike = this.isLike
     )
 }

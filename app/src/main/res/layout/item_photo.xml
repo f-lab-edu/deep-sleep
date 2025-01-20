@@ -41,7 +41,7 @@
             android:id="@+id/bt_heart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_heart"
+            android:src="@drawable/selector_bt_heart"
             app:layout_constraintBottom_toBottomOf="@+id/photo_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/photo_title" />

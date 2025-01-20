@@ -1,8 +1,11 @@
 package com.flab.deepsleep
 
 import PhotoAdapter
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +13,10 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.details.DetailsActivity
 import com.flab.deepsleep.ui.photo.PhotoViewModel
@@ -20,6 +25,7 @@ import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -29,10 +35,19 @@ class MainActivity : AppCompatActivity() {
     private val buttonClick = OnButtonClickListener { singlePhoto ->
         photoViewModel.insertPhoto(singlePhoto)
     }
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val singlePhoto = result.data?.getParcelableExtra<SinglePhoto>("singlePhoto")
+                Timber.d("MainActivity $singlePhoto")
+            }
+        }
+
     private val onPhotoItemClickListener =
         OnPhotoItemClickListener { singlePhoto ->
-            DetailsActivity.startActivity(this, singlePhoto)
+            startForResult.launch(DetailsActivity.startActivity(this, singlePhoto))
         }
+
     private val photoAdapter: PhotoAdapter by lazy {
         PhotoAdapter(buttonClick, onPhotoItemClickListener)
     }
@@ -78,4 +93,5 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
     }
+
 }
