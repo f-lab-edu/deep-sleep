@@ -53,6 +53,7 @@ class PhotoViewModel @Inject constructor(
                 pagingSourceFactory = { PhotoPagingSource(photos) }
             ).flow
         }
+        .cachedIn(viewModelScope) // 여기
         .combine(savedPhotos) { pagingData, savedPhotos ->
             pagingData.map { photo ->
                 val savedPhoto = savedPhotos.find { it.id == photo.id }
@@ -63,8 +64,6 @@ class PhotoViewModel @Inject constructor(
                 }
             }
         }
-        .cachedIn(viewModelScope)
-
 
     /* Bookmark */
     private val _isLiked = MutableLiveData<Boolean>()
@@ -109,7 +108,6 @@ class PhotoViewModel @Inject constructor(
                     }?.awaitAll()?.filterNotNull() ?: emptyList()
             } catch (e: Exception) {
                 e.printStackTrace()
-
                 emptyList()
             }
         }
