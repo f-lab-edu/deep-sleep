@@ -1,6 +1,5 @@
 package com.flab.deepsleep.ui.details
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -42,13 +41,7 @@ class DetailsActivity : AppCompatActivity() {
 
         photoViewModel.isLiked.observe(this) { isLiked ->
             detailsBinding.detailBtHeart.isSelected = isLiked
-            onLikeStatusChanged(isLiked)
         }
-    }
-
-    private fun onLikeStatusChanged(isLiked: Boolean) {
-        val updatedPhoto = singlePhoto?.copy(isLike = isLiked)
-        updatedPhoto?.let { returnResult(it) }
     }
 
     private fun loadImage(imageUrl: String?) {
@@ -74,20 +67,12 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun returnResult(singlePhoto: SinglePhoto) {
-        val resultIntent = Intent().apply {
-            putExtra("singlePhoto", singlePhoto)
-        }
-        setResult(Activity.RESULT_OK, resultIntent)
-        finish()
-    }
-
     companion object {
-        fun startActivity(context: Context, singlePhoto: SinglePhoto): Intent {
+        fun startActivity(context: Context, singlePhoto: SinglePhoto) {
             val intent = Intent(context, DetailsActivity::class.java).apply {
                 putExtra("singlePhoto", singlePhoto)
             }
-            return intent
+            context.startActivity(intent)
         }
     }
 }

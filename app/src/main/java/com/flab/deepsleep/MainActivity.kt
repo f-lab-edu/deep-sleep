@@ -35,17 +35,10 @@ class MainActivity : AppCompatActivity() {
     private val buttonClick = OnButtonClickListener { singlePhoto ->
         photoViewModel.insertPhoto(singlePhoto)
     }
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val singlePhoto = result.data?.getParcelableExtra<SinglePhoto>("singlePhoto")
-                Timber.d("MainActivity $singlePhoto")
-            }
-        }
 
     private val onPhotoItemClickListener =
         OnPhotoItemClickListener { singlePhoto ->
-            startForResult.launch(DetailsActivity.startActivity(this, singlePhoto))
+            DetailsActivity.startActivity(this, singlePhoto)
         }
 
     private val photoAdapter: PhotoAdapter by lazy {

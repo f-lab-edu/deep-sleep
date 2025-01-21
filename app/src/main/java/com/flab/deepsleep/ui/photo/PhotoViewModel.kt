@@ -13,11 +13,12 @@ import androidx.paging.map
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.data.entity.photos.toPhoto
 import com.flab.deepsleep.data.repository.db.PhotoRepository
-import com.flab.deepsleep.data.repository.photo.UnplashRepositoryImpl
+import com.flab.deepsleep.data.repository.photo.UnplashRepository
 import com.flab.deepsleep.data.source.PhotoPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -33,7 +34,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoViewModel @Inject constructor(
-    private val unplashRepository: UnplashRepositoryImpl,
+    private val unplashRepository: UnplashRepository,
     private val photoRepository: PhotoRepository
 ) : ViewModel() {
 
@@ -41,10 +42,11 @@ class PhotoViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    private val savedPhotos = photoRepository.getAllPhotos() // Room Flow API 사용
-
     /* Paging Flow */
     private val _photoState = MutableLiveData<List<SinglePhoto>?>()
+    private val savedPhotos = photoRepository.getAllPhotos() // Room Flow API 사용
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     val items: Flow<PagingData<SinglePhoto>> = _photoState.asFlow()
         .map { state -> state ?: emptyList() }
         .flatMapLatest { photos ->
@@ -58,9 +60,9 @@ class PhotoViewModel @Inject constructor(
             pagingData.map { photo ->
                 val savedPhoto = savedPhotos.find { it.id == photo.id }
                 if (savedPhoto != null) {
-                    photo.copy(isLike = savedPhoto.isLike)
+                    photo.copy(isLike = savedPhoto.isLike)  // isLike 복사
                 } else {
-                    photo
+                    photo   // 그대로 반환
                 }
             }
         }
