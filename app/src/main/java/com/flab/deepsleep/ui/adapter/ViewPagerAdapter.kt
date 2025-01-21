@@ -13,7 +13,7 @@ class ViewPagerAdapter(mainActivity: MainActivity) : FragmentStateAdapter(mainAc
         return when (position) {
             0 -> HomeFragment()
             1 -> BookmarkFragment()
-            else -> HomeFragment()
+            else ->  throw IllegalStateException("Unexpected position $position")
         }
     }
 

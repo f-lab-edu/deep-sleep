@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-    private val binding: FragmentHomeBinding by lazy { FragmentHomeBinding.inflate(layoutInflater) }
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     private val photoViewModel: PhotoViewModel by activityViewModels()
     private val photoRecyclerView: RecyclerView by lazy { binding.photosRecyclerView }
     private val pagingAdapter: PagingAdapter by lazy {
@@ -30,7 +31,9 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        return binding.root
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,6 +50,11 @@ class HomeFragment : Fragment() {
     private fun setRecyclerView() {
         photoRecyclerView.layoutManager = GridLayoutManager(context, 2)
         photoRecyclerView.adapter = pagingAdapter
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

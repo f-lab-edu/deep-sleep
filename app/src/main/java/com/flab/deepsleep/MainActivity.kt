@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.icon = ContextCompat.getDrawable(this, tabIcons[position])
             tab.text = when (position) {
-                0 -> "홈"
-                1 -> "북마크"
+                0 -> getString(R.string.home)
+                1 -> getString(R.string.bookmark)
                 else -> "탭 ${position + 1}"
             }
         }.attach()

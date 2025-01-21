@@ -25,8 +25,10 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -55,6 +57,14 @@ class PhotoViewModel @Inject constructor(
             ).flow
         }
         .cachedIn(viewModelScope)
+
+    /* Room Flow */
+    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
     /* 사진 검색 */
     fun searchPhotos(query: String) {
