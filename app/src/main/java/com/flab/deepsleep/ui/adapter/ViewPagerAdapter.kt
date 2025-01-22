@@ -5,16 +5,15 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.flab.deepsleep.MainActivity
 import com.flab.deepsleep.ui.fragment.BookmarkFragment
 import com.flab.deepsleep.ui.fragment.HomeFragment
+import com.flab.deepsleep.utils.Index
 
 class ViewPagerAdapter(mainActivity: MainActivity) : FragmentStateAdapter(mainActivity) {
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
-        return when (position) {
-            0 -> HomeFragment()
-            1 -> BookmarkFragment()
-            else ->  throw IllegalStateException("Unexpected position $position")
+        return when (Index.positionOfIndex(position)) {
+            Index.HOME -> HomeFragment()
+            Index.BOOKMARK -> BookmarkFragment()
         }
     }
-
 }

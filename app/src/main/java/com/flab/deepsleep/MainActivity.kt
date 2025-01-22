@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.adapter.ViewPagerAdapter
 import com.flab.deepsleep.ui.photo.PhotoViewModel
+import com.flab.deepsleep.utils.Index
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,10 +46,9 @@ class MainActivity : AppCompatActivity() {
         val tabIcons = listOf(R.drawable.ic_home, R.drawable.ic_bookmark)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.icon = ContextCompat.getDrawable(this, tabIcons[position])
-            tab.text = when (position) {
-                0 -> getString(R.string.home)
-                1 -> getString(R.string.bookmark)
-                else -> "탭 ${position + 1}"
+            tab.text = when (Index.positionOfIndex(position)) {
+                Index.HOME -> getString(R.string.home)
+                Index.BOOKMARK -> getString(R.string.bookmark)
             }
         }.attach()
     }

@@ -15,8 +15,9 @@ import com.flab.deepsleep.ui.photo.OnButtonClick
 class PagingAdapter(private val buttonClick: OnButtonClick) :
     PagingDataAdapter<SinglePhoto, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
-    inner class ImageViewHolder(
+    class ImageViewHolder(
         private val binding: ItemPhotoBinding,
+        private val buttonClick: OnButtonClick
     ) : RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
 
@@ -42,7 +43,7 @@ class PagingAdapter(private val buttonClick: OnButtonClick) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding)
+        return ImageViewHolder(binding, buttonClick)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
