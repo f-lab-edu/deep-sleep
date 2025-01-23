@@ -15,7 +15,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.0.2") // Android Gradle Plugin
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.51.1") // Hilt Plugin
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.51.1") // Hilt 플러그인
         classpath("org.jetbrains.kotlin.plugin.parcelize:org.jetbrains.kotlin.plugin.parcelize.gradle.plugin:2.1.20-Beta1") // Parcelize Plugin
     }
 }

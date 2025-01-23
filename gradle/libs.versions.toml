@@ -27,6 +27,9 @@ okhttp = "4.12.0"
 okhttp-profiler = "1.0.8"
 room = "2.6.1"
 ksp = "2.1.20-Beta1-1.0.29"
+fragment-ktx = "1.8.5"
+activity-ktx = "1.10.0"
+viewpager2 = "1.1.0"
 parcelize = "2.1.20-Beta1"
 
 [libraries]
@@ -59,6 +62,9 @@ okhttp-profiler = { module = "com.localebro:okhttpprofiler", version.ref = "okht
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment-ktx" }
+activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity-ktx" }
+viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

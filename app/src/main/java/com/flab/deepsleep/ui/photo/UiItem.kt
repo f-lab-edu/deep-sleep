@@ -21,7 +21,8 @@ fun UiItem.toPhoto(): Photo {
         likes = this.likes,
         urls = this.urls,
         createdAt = this.createdAt,
+        description = this.description,
         username = this.username,
-        isLike = true
+        isLike = true,
     )
 }

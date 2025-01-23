@@ -30,7 +30,6 @@
             android:id="@+id/photo_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/test"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/bt_heart"

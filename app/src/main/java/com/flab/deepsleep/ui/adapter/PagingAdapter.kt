@@ -1,4 +1,4 @@
-package com.flab.deepsleep.ui.photo
+package com.flab.deepsleep.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,17 +9,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.HolderItemPhotoBinding
+import com.flab.deepsleep.ui.photo.OnButtonClickListener
+import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
+import com.flab.deepsleep.ui.photo.UiItem
 
-class PhotoAdapter(
+class PagingAdapter(
     private val buttonClick: OnButtonClickListener,
     private val onPhotoItemClickListener: OnPhotoItemClickListener
 ) :
-    PagingDataAdapter<UiItem, PhotoAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
+    PagingDataAdapter<UiItem, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     class ImageViewHolder(
         private val binding: HolderItemPhotoBinding,
         private val buttonClick: OnButtonClickListener,
         private val onPhotoItemClickListener: OnPhotoItemClickListener
+
     ) : RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
 

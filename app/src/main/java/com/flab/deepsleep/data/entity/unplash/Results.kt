@@ -1,6 +1,7 @@
-package com.flab.deepsleep.data.entity.unplash
+package com.flab.deepsleep.data.entity.photos
 import android.os.Parcel
 import android.os.Parcelable
+import com.flab.deepsleep.data.entity.unplash.SearchUser
 import com.google.gson.annotations.SerializedName
 
 data class Results(
