@@ -7,9 +7,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ActivityDetailsBinding
-import com.flab.deepsleep.ui.photo.PhotoViewModel
+import com.flab.deepsleep.ui.photo.UiItem
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.NumberFormat
@@ -20,26 +19,26 @@ class DetailsActivity : AppCompatActivity() {
     private val detailsBinding: ActivityDetailsBinding by lazy {
         ActivityDetailsBinding.inflate(layoutInflater)
     }
-    private val photoViewModel: PhotoViewModel by viewModels()
-    private val singlePhoto: SinglePhoto? by lazy {
-        @Suppress("DEPRECATION") intent.getParcelableExtra<SinglePhoto>("singlePhoto")
+    private val detailsViewModel: DetailsViewModel by viewModels()
+    private val uiItem: UiItem? by lazy {
+        @Suppress("DEPRECATION") intent.getParcelableExtra<UiItem>("uiItem")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(detailsBinding.root)
 
-        singlePhoto?.let {
-            loadImage(it.urls?.raw)
+        uiItem?.let {
+            loadImage(it.urls)
             bindPhotoDetails(it)
             /* 좋아요 표시 */
-            singlePhoto?.id?.let { photoViewModel.loadPhotoLikeStatus(it) }
+            uiItem?.id?.let { detailsViewModel.loadPhotoLikeStatus(it) }
         } ?: run {
             loadImage(null)
             Timber.d("singlePhoto is null")
         }
 
-        photoViewModel.isLiked.observe(this) { isLiked ->
+        detailsViewModel.isLiked.observe(this) { isLiked ->
             detailsBinding.detailBtHeart.isSelected = isLiked
         }
     }
@@ -52,25 +51,25 @@ class DetailsActivity : AppCompatActivity() {
             .into(detailsBinding.detailsImageView)
     }
 
-    private fun bindPhotoDetails(singlePhoto: SinglePhoto) {
+    private fun bindPhotoDetails(uiItem: UiItem) {
         val numberFormat = NumberFormat.getNumberInstance(Locale.KOREA)
-        val result = numberFormat.format(singlePhoto.likes)
+        val result = numberFormat.format(uiItem.likes)
         detailsBinding.apply {
-            detailDescription.text = singlePhoto.description ?: "No description available"
-            detailCreateAt.text = singlePhoto.createdAt?.take(10) ?: "Unknown date"
+            detailDescription.text = uiItem.description ?: "No description available"
+            detailCreateAt.text = uiItem.createdAt?.take(10) ?: "Unknown date"
             detailLikes.text = result
-            detailUsername.text = singlePhoto.user?.username
+            detailUsername.text = uiItem.username
         }
 
         detailsBinding.detailBtHeart.setOnClickListener {
-            photoViewModel.insertPhoto(singlePhoto)
+            detailsViewModel.insertPhoto(uiItem)
         }
     }
 
     companion object {
-        fun startActivity(context: Context, singlePhoto: SinglePhoto) {
+        fun startActivity(context: Context, uiItem: UiItem) {
             val intent = Intent(context, DetailsActivity::class.java).apply {
-                putExtra("singlePhoto", singlePhoto)
+                putExtra("uiItem", uiItem)
             }
             context.startActivity(intent)
         }

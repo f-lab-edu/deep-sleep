@@ -1,44 +1,42 @@
+package com.flab.deepsleep.ui.photo
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.data.entity.photos.toPhoto
-import com.flab.deepsleep.databinding.ItemPhotoBinding
-import com.flab.deepsleep.ui.photo.OnButtonClickListener
-import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
-import timber.log.Timber
+import com.flab.deepsleep.databinding.HolderItemPhotoBinding
 
 class PhotoAdapter(
     private val buttonClick: OnButtonClickListener,
     private val onPhotoItemClickListener: OnPhotoItemClickListener
 ) :
-    PagingDataAdapter<SinglePhoto, PhotoAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
+    PagingDataAdapter<UiItem, PhotoAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
-    inner class ImageViewHolder(
-        private val binding: ItemPhotoBinding,
+    class ImageViewHolder(
+        private val binding: HolderItemPhotoBinding,
+        private val buttonClick: OnButtonClickListener,
+        private val onPhotoItemClickListener: OnPhotoItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
 
-        fun bind(photo: SinglePhoto) {
-            itemView.tag = photo
-            binding.btHeart.isSelected = photo.isLike
+        fun bind(uiItem: UiItem) {
+            itemView.tag = uiItem
+            binding.btHeart.isSelected = uiItem.isLike
 
             /* Like Button */
             binding.btHeart.setOnClickListener {
-                buttonClick.onButtonClick(photo)
+                buttonClick.onButtonClick(uiItem)
             }
 
             imageView.setOnClickListener {
-                onPhotoItemClickListener.onPhotoItemClick(photo)
+                onPhotoItemClickListener.onPhotoItemClick(uiItem)
             }
 
-            val imageUrl = photo.urls?.raw
+            val imageUrl = uiItem.urls
             if (imageUrl != null) {
                 Glide.with(imageView.context)
                     .load(imageUrl)
@@ -51,25 +49,26 @@ class PhotoAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding)
+        val binding =
+            HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ImageViewHolder(binding, buttonClick, onPhotoItemClickListener)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val photo = getItem(position)
-        photo?.let {
-            holder.bind(photo)
+        val uiItem = getItem(position)
+        uiItem?.let {
+            holder.bind(uiItem)
         }
     }
 
     /* Paging */
     companion object {
-        private val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<SinglePhoto>() {
-            override fun areItemsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean {
+        private val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<UiItem>() {
+            override fun areItemsTheSame(oldItem: UiItem, newItem: UiItem): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean {
+            override fun areContentsTheSame(oldItem: UiItem, newItem: UiItem): Boolean {
                 return oldItem == newItem
             }
         }

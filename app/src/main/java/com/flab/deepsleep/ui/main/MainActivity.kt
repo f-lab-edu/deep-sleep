@@ -1,11 +1,8 @@
-package com.flab.deepsleep
+package com.flab.deepsleep.ui.main
 
-import PhotoAdapter
-import android.app.Activity
+import com.flab.deepsleep.ui.photo.PhotoAdapter
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -13,32 +10,28 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.PagingData
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.details.DetailsActivity
-import com.flab.deepsleep.ui.photo.PhotoViewModel
 import com.flab.deepsleep.ui.photo.OnButtonClickListener
 import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val photoViewModel: PhotoViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val photoRecyclerView: RecyclerView by lazy { binding.photosRecyclerView }
-    private val buttonClick = OnButtonClickListener { singlePhoto ->
-        photoViewModel.insertPhoto(singlePhoto)
+    private val buttonClick = OnButtonClickListener { uiItem ->
+        mainViewModel.insertPhoto(uiItem)
     }
 
     private val onPhotoItemClickListener =
-        OnPhotoItemClickListener { singlePhoto ->
-            DetailsActivity.startActivity(this, singlePhoto)
+        OnPhotoItemClickListener { uiItem ->
+            DetailsActivity.startActivity(this, uiItem)
         }
 
     private val photoAdapter: PhotoAdapter by lazy {
@@ -46,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setRecyclerView() {
-        photoRecyclerView.layoutManager = GridLayoutManager(this, 2)
+        photoRecyclerView.layoutManager = LinearLayoutManager(this)
         photoRecyclerView.adapter = photoAdapter
     }
 
@@ -58,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                photoViewModel.items.collectLatest {
+                mainViewModel.items.collectLatest {
                     photoAdapter.submitData(it)
                 }
             }
@@ -66,11 +59,11 @@ class MainActivity : AppCompatActivity() {
 
         /* 검색어 입력시 자동 호출 */
         binding.editText.doOnTextChanged { text, start, before, count ->
-            photoViewModel.searchPhotos(text.toString())
+            mainViewModel.searchPhotos(text.toString())
         }
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(this) { it ->
+        mainViewModel.errorMessage.observe(this) { it ->
             it?.let {
                 showErrorDialog(it)
             }
@@ -86,5 +79,4 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
     }
-
 }

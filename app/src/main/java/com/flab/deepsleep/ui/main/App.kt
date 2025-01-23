@@ -1,19 +1,16 @@
-package com.flab.deepsleep
+package com.flab.deepsleep.ui.main
 
 import android.app.Application
-import com.flab.deepsleep.utils.TimberDebugTree
+import com.flab.deepsleep.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
-
 @HiltAndroidApp
-class MainApplication: Application(){
-
+class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
         if (BuildConfig.DEBUG) {
-            // Timber Initialize
             Timber.uprootAll()
             Timber.plant(object : Timber.DebugTree() {
                 override fun createStackElementTag(element: StackTraceElement): String {
@@ -21,8 +18,6 @@ class MainApplication: Application(){
                     return "<$threadName> (${element.fileName}:${element.lineNumber})#${element.methodName} "
                 }
             })
-
         }
     }
 }
-

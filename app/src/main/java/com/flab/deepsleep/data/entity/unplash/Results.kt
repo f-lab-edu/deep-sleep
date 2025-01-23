@@ -1,4 +1,4 @@
-package com.flab.deepsleep.data.entity.photos
+package com.flab.deepsleep.data.entity.unplash
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
