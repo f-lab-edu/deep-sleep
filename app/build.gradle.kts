@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.parcelize)
 }
 android {
     namespace = "com.flab.deepsleep"
@@ -23,6 +24,12 @@ android {
         val unsplashAccessKey = localProperties.getProperty("UNSPLASH_ACCESS_KEY") ?: ""
         buildConfigField("String", "UNSPLASH_ACCESS_KEY", "\"$unsplashAccessKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.schemaLocation"] = "$projectDir/schemas"
+            }
+        }
     }
     buildTypes {
         release {
@@ -67,6 +74,9 @@ dependencies {
     implementation(libs.okhttp.profiler)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.fragment.ktx)
+    implementation(libs.activity.ktx)
+    implementation(libs.viewpager2)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

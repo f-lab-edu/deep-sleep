@@ -18,14 +18,17 @@ import com.flab.deepsleep.data.source.PhotoPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,10 +47,7 @@ class PhotoViewModel @Inject constructor(
     private val _photoState = MutableLiveData<List<SinglePhoto>?>()
     val photoState: MutableLiveData<List<SinglePhoto>?> get() = _photoState
 
-    /* Photo Database */
-    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
-
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     val items: Flow<PagingData<SinglePhoto>> = _photoState.asFlow()
         .map { state -> state ?: emptyList() }
         .flatMapLatest { photos ->
@@ -57,6 +57,14 @@ class PhotoViewModel @Inject constructor(
             ).flow
         }
         .cachedIn(viewModelScope)
+
+    /* Room Flow */
+    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
     /* 사진 검색 */
     fun searchPhotos(query: String) {
@@ -70,7 +78,7 @@ class PhotoViewModel @Inject constructor(
         }
     }
 
-    suspend fun getSearchPhotos(query: String): List<SinglePhoto> {
+    private suspend fun getSearchPhotos(query: String): List<SinglePhoto> {
         return coroutineScope {
             try {
                 unplashRepository.getSearchPhotos(query)
