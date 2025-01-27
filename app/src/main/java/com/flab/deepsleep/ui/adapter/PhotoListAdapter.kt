@@ -3,7 +3,6 @@ package com.flab.deepsleep.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,15 +11,28 @@ import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.room.Photo
 import com.flab.deepsleep.databinding.ItemPhotoBinding
 
-class PhotoAdapter : ListAdapter<Photo, PhotoAdapter.ItemViewHolder>(ITEM_DIFF_CALLBACK) {
+class PhotoListAdapter(
+    val onLikeToggled: (photo: Photo) -> Unit
+) :
+    ListAdapter<Photo, PhotoListAdapter.ItemViewHolder>(ITEM_DIFF_CALLBACK) {
 
-    class ItemViewHolder(private val binding: ItemPhotoBinding) :
+    class ItemViewHolder(
+        private val binding: ItemPhotoBinding,
+        onItemClick: (position: Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
-        private val title: TextView = binding.photoTitle
+        private val btHeart: ImageView = binding.btHeart
+
+        init {
+            btHeart.setOnClickListener {
+                onItemClick(bindingAdapterPosition)
+            }
+        }
 
         fun bind(photo: Photo) {
-            title.text = photo.description
+            binding.photoTitle.text = photo.description
+            btHeart.isSelected = photo.isLike
 
             val imageUrl = photo.urls
             if (imageUrl != null) {
@@ -36,7 +48,12 @@ class PhotoAdapter : ListAdapter<Photo, PhotoAdapter.ItemViewHolder>(ITEM_DIFF_C
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemViewHolder(binding)
+        return ItemViewHolder(binding, onItemClick = { position ->
+            val photo = getItem(position)
+            photo?.let {
+                this.onLikeToggled(photo)
+            }
+        })
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

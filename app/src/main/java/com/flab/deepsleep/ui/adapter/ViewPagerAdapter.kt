@@ -2,7 +2,7 @@ package com.flab.deepsleep.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.flab.deepsleep.MainActivity
+import com.flab.deepsleep.ui.activity.MainActivity
 import com.flab.deepsleep.ui.fragment.BookmarkFragment
 import com.flab.deepsleep.ui.fragment.HomeFragment
 import com.flab.deepsleep.utils.Index

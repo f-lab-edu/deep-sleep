@@ -8,28 +8,32 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.databinding.ItemPhotoBinding
-import com.flab.deepsleep.ui.photo.OnButtonClick
+import com.flab.deepsleep.ui.listener.UiItem
 
-class PagingAdapter(private val buttonClick: OnButtonClick) :
-    PagingDataAdapter<SinglePhoto, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
+class PagingAdapter(
+    val onLikeToggled: (uiItem: UiItem) -> Unit
+) :
+    PagingDataAdapter<UiItem, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     class ImageViewHolder(
         private val binding: ItemPhotoBinding,
-        private val buttonClick: OnButtonClick
+        onItemClick: (position: Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
+        val btHeart: ImageView = binding.btHeart
 
-        fun bind(photo: SinglePhoto) {
-            itemView.tag = photo
-
-            /* Like Button */
-            binding.btHeart.setOnClickListener {
-                buttonClick.onButtonClick(photo)
+        init {
+            btHeart.setOnClickListener {
+                onItemClick(bindingAdapterPosition)
             }
+        }
 
-            val imageUrl = photo.urls?.raw
+        fun bind(uiItem: UiItem) {
+            binding.photoTitle.text = uiItem.description
+            btHeart.isSelected = uiItem.isLike
+
+            val imageUrl = uiItem.urls
             if (imageUrl != null) {
                 Glide.with(imageView.context)
                     .load(imageUrl)
@@ -43,24 +47,28 @@ class PagingAdapter(private val buttonClick: OnButtonClick) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding, buttonClick)
+        return ImageViewHolder(binding,
+            onItemClick = { position ->
+                val photo = getItem(position)
+                photo?.let {
+                    this.onLikeToggled(photo)
+                }
+            }
+        )
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val photo = getItem(position)
-        photo?.let {
-            holder.bind(photo)
-        }
+        getItem(position)?.let { holder.bind(it) }
     }
 
     /* Paging */
     companion object {
-        private val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<SinglePhoto>() {
-            override fun areItemsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean {
+        private val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<UiItem>() {
+            override fun areItemsTheSame(oldItem: UiItem, newItem: UiItem): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: SinglePhoto, newItem: SinglePhoto): Boolean {
+            override fun areContentsTheSame(oldItem: UiItem, newItem: UiItem): Boolean {
                 return oldItem == newItem
             }
         }

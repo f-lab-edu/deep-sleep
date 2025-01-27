@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.coroutineScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentBookmarkBinding
-import com.flab.deepsleep.ui.adapter.PhotoAdapter
-import com.flab.deepsleep.ui.photo.PhotoViewModel
+import com.flab.deepsleep.ui.adapter.PhotoListAdapter
+import com.flab.deepsleep.ui.viewmodel.BookmarkViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -20,8 +20,14 @@ class BookmarkFragment : Fragment() {
     private var _binding: FragmentBookmarkBinding? = null
     private val binding get() = _binding!!
     private val photoRecyclerView: RecyclerView by lazy { binding.bookmarkRecyclerview }
-    private val photoAdapter: PhotoAdapter by lazy { PhotoAdapter() }
-    private val photoViewModel: PhotoViewModel by activityViewModels()
+    private val bookmarkViewModel: BookmarkViewModel by activityViewModels()
+    private val photoListAdapter: PhotoListAdapter by lazy {
+        PhotoListAdapter { photo ->
+            photo.id?.let {
+                bookmarkViewModel.deletePhoto(it)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -35,16 +41,16 @@ class BookmarkFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
 
-        lifecycleScope.launch {
-            photoViewModel.allPhotos.collect { photos ->
-                photoAdapter.submitList(photos)
+        lifecycle.coroutineScope.launch {
+            bookmarkViewModel.getAllPhotos().collect {
+                photoListAdapter.submitList(it)
             }
         }
     }
 
     private fun setRecyclerView() {
-        photoRecyclerView.layoutManager = GridLayoutManager(context, 2)
-        photoRecyclerView.adapter = photoAdapter
+        photoRecyclerView.layoutManager = LinearLayoutManager(context)
+        photoRecyclerView.adapter = photoListAdapter
     }
 
     override fun onDestroyView() {

@@ -1,4 +1,4 @@
-package com.flab.deepsleep.ui.photo
+package com.flab.deepsleep.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,15 +9,16 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.data.entity.photos.toPhoto
 import com.flab.deepsleep.data.entity.room.Photo
 import com.flab.deepsleep.data.repository.db.PhotoRepository
 import com.flab.deepsleep.data.repository.photo.UnplashRepositoryImpl
 import com.flab.deepsleep.data.source.PhotoPagingSource
+import com.flab.deepsleep.ui.listener.UiItem
+import com.flab.deepsleep.ui.listener.toPhoto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -25,16 +26,14 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class PhotoViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val unplashRepository: UnplashRepositoryImpl,
     private val photoRepository: PhotoRepository
 ) : ViewModel() {
@@ -44,11 +43,13 @@ class PhotoViewModel @Inject constructor(
     val errorMessage: LiveData<String> get() = _errorMessage
 
     /* Paging Flow */
-    private val _photoState = MutableLiveData<List<SinglePhoto>?>()
-    val photoState: MutableLiveData<List<SinglePhoto>?> get() = _photoState
+    private val _apiPhotoState = MutableLiveData<List<SinglePhoto>?>()
+
+    /* Room Flow */
+    private val savedPhotos = photoRepository.getAllPhotos()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val items: Flow<PagingData<SinglePhoto>> = _photoState.asFlow()
+    val items: Flow<PagingData<UiItem>> = _apiPhotoState.asFlow()
         .map { state -> state ?: emptyList() }
         .flatMapLatest { photos ->
             Pager(
@@ -57,24 +58,33 @@ class PhotoViewModel @Inject constructor(
             ).flow
         }
         .cachedIn(viewModelScope)
-
-    /* Room Flow */
-    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptyList()
-        )
+        .combine(savedPhotos) { pagingData, savedPhotos ->
+            pagingData.map { photo ->
+                val savedPhoto = savedPhotos.find { it.id == photo.id }
+                if (savedPhoto != null) {
+                    mapToUiItem(photo, savedPhoto)
+                } else {
+                    mapToUiItem(photo, null).copy(isLike = false)
+                }
+            }
+        }
 
     /* 사진 검색 */
     fun searchPhotos(query: String) {
         searchDebouncer(query)
     }
 
-    /* 즐겨찾기 추가 */
-    fun insertPhoto(singlePhoto: SinglePhoto) {
-        viewModelScope.launch(Dispatchers.IO) {
-            photoRepository.insertPhoto(singlePhoto.toPhoto())
+    /* Bookmark 추가 */
+    fun insertPhoto(uiItem: UiItem) {
+        viewModelScope.launch {
+            photoRepository.insertPhoto(uiItem.toPhoto())
+        }
+    }
+
+    /* Bookmark 삭제 */
+    fun deletePhoto(id: String) {
+        viewModelScope.launch {
+            photoRepository.deletePhoto(id)
         }
     }
 
@@ -100,6 +110,18 @@ class PhotoViewModel @Inject constructor(
         }
     }
 
+    private fun mapToUiItem(photo: SinglePhoto, savedPhoto: Photo?): UiItem {
+        return UiItem(
+            id = photo.id,
+            createdAt = photo.createdAt,
+            description = photo.description,
+            likes = photo.likes,
+            urls = photo.urls?.raw,
+            username = photo.user?.username,
+            isLike = savedPhoto?.isLike ?: false
+        )
+    }
+
     private fun <T> debounce(
         timeMillis: Long = 300L,
         coroutineScope: CoroutineScope,
@@ -119,13 +141,13 @@ class PhotoViewModel @Inject constructor(
         timeMillis = 300L,
         coroutineScope = viewModelScope
     ) { query ->
-        _photoState.value = null
+        _apiPhotoState.value = null
         try {
             val photos = getSearchPhotos(query)
-            _photoState.value = photos
+            _apiPhotoState.value = photos
         } catch (e: Exception) {
             e.printStackTrace()
-            _photoState.value = emptyList()
+            _apiPhotoState.value = emptyList()
         }
     }
 }
