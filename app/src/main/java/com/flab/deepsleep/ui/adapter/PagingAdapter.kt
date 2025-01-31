@@ -9,20 +9,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.databinding.ItemPhotoBinding
+import com.flab.deepsleep.databinding.HolderItemPhotoBinding
 import com.flab.deepsleep.ui.photo.OnButtonClick
 
 class PagingAdapter(private val buttonClick: OnButtonClick) :
     PagingDataAdapter<SinglePhoto, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     class ImageViewHolder(
-        private val binding: ItemPhotoBinding,
+        private val binding: HolderItemPhotoBinding,
         private val buttonClick: OnButtonClick
     ) : RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
 
         fun bind(photo: SinglePhoto) {
             itemView.tag = photo
+            binding.photoTitle.text = photo.description
 
             /* Like Button */
             binding.btHeart.setOnClickListener {
@@ -42,7 +43,8 @@ class PagingAdapter(private val buttonClick: OnButtonClick) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ImageViewHolder(binding, buttonClick)
     }
 

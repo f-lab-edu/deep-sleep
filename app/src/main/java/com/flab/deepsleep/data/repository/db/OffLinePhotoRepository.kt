@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 class OffLinePhotoRepository(private val photoDao: PhotoDao) : PhotoRepository {
     override fun getAllPhotos(): Flow<List<Photo>> = photoDao.getAll()
-    override suspend fun insertPhoto(like: Photo) = photoDao.insert(like)
+    override suspend fun insertPhoto(photo: Photo) = photoDao.insert(photo)
     override suspend fun deletePhoto(photo: Photo) = photoDao.delete(photo)
 }

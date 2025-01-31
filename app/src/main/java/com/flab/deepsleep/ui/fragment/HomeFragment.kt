@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentHomeBinding
 import com.flab.deepsleep.ui.photo.PhotoViewModel
@@ -48,7 +48,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        photoRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        photoRecyclerView.layoutManager = LinearLayoutManager(context)
         photoRecyclerView.adapter = pagingAdapter
     }
 
@@ -56,5 +56,4 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }

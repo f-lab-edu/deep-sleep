@@ -6,4 +6,21 @@
     </style>
 
     <style name="Theme.Deepsleep" parent="Base.Theme.Deepsleep" />
+
+
+    <style name="CustomSearchBar" parent="Widget.Material3.SearchBar">
+        <item name="shapeAppearanceLargeComponent">@style/SearchBarShape</item>
+    </style>
+
+    <style name="SearchBarShape" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+
+
+    <style name="RoundedEditText">
+        <item name="android:background">@drawable/custom_edittext</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

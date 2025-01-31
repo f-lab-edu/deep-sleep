@@ -3,22 +3,20 @@ package com.flab.deepsleep.data.source
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import timber.log.Timber
 
 class PhotoPagingSource(
-    private val photos: List<SinglePhoto>
+    private val query: String,
+    private val getSearchPhotos: suspend (String, Int) -> List<SinglePhoto>
 ) : PagingSource<Int, SinglePhoto>() {
-    private val STARTING_KEY = 0
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SinglePhoto> {
         val page = params.key ?: 1
-        val start = (page - 1) * params.loadSize
-        val end = minOf(start + params.loadSize, photos.size)
         return try {
+            val photos = getSearchPhotos(query, page)
             LoadResult.Page(
-                data = photos.subList(start, end),
-                prevKey = if (page == STARTING_KEY) null else page - 1,
-                nextKey = if (photos.isEmpty()) null else page + 1
+                data = photos,
+                prevKey = if (page == 1) null else page - 1,
+                nextKey = if (photos.isNotEmpty()) page + 1 else null
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
@@ -31,5 +29,4 @@ class PhotoPagingSource(
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
-
 }

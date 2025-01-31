@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentBookmarkBinding
 import com.flab.deepsleep.ui.adapter.PhotoAdapter
@@ -43,12 +43,12 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        photoRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        photoRecyclerView.layoutManager = LinearLayoutManager(context)
         photoRecyclerView.adapter = photoAdapter
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null;
+        _binding = null
     }
 }
