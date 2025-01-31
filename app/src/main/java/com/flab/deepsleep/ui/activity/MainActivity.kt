@@ -37,8 +37,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(/* owner = */ this) { it ->
-            it?.let { showErrorDialog(it) }
+        photoViewModel.errorMessage.observe(this) { it ->
+            it?.let {
+                showErrorDialog(it)
+            }
         }
     }
 

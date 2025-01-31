@@ -10,21 +10,19 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
 import com.flab.deepsleep.data.entity.room.Photo
+import com.flab.deepsleep.data.entity.unplash.SinglePhoto
 import com.flab.deepsleep.data.repository.db.PhotoRepository
-import com.flab.deepsleep.data.repository.photo.UnplashRepositoryImpl
+import com.flab.deepsleep.data.repository.photo.UnplashRepository
 import com.flab.deepsleep.data.source.PhotoPagingSource
-import com.flab.deepsleep.ui.listener.UiItem
-import com.flab.deepsleep.ui.listener.toPhoto
+import com.flab.deepsleep.ui.photo.UiItem
+import com.flab.deepsleep.ui.photo.toPhoto
+import com.flab.deepsleep.utils.Debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -34,7 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val unplashRepository: UnplashRepositoryImpl,
+    private val unplashRepository: UnplashRepository,
     private val photoRepository: PhotoRepository
 ) : ViewModel() {
 
@@ -104,7 +102,6 @@ class HomeViewModel @Inject constructor(
                     }?.awaitAll()?.filterNotNull() ?: emptyList()
             } catch (e: Exception) {
                 e.printStackTrace()
-
                 emptyList()
             }
         }
@@ -122,22 +119,7 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    private fun <T> debounce(
-        timeMillis: Long = 300L,
-        coroutineScope: CoroutineScope,
-        block: suspend (T) -> Unit
-    ): (T) -> Unit {
-        var debounceJob: Job? = null
-        return { param: T ->
-            debounceJob?.cancel() // 이전 작업 취소
-            debounceJob = coroutineScope.launch {
-                delay(timeMillis)
-                block(param)
-            }
-        }
-    }
-
-    private val searchDebouncer = debounce<String>(
+    private val searchDebouncer = Debounce.debounce<String>(
         timeMillis = 300L,
         coroutineScope = viewModelScope
     ) { query ->

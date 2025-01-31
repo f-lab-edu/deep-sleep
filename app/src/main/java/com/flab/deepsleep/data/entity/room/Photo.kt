@@ -3,7 +3,7 @@ package com.flab.deepsleep.data.entity.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.flab.deepsleep.ui.listener.UiItem
+import com.flab.deepsleep.ui.photo.UiItem
 
 @Entity(tableName = "photo")
 data class Photo(

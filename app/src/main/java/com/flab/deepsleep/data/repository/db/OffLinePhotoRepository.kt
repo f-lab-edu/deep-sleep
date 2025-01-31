@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 
 class OffLinePhotoRepository(private val photoDao: PhotoDao) : PhotoRepository {
     override fun getAllPhotos(): Flow<List<Photo>> = photoDao.getAll()
+    override fun getSinglePhoto(id: String): Flow<Photo?> = photoDao.getPhoto(id)
     override suspend fun insertPhoto(photo: Photo) =
         withContext(Dispatchers.IO) { photoDao.insert(photo) }
 

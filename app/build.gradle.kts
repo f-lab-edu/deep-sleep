@@ -13,7 +13,6 @@ plugins {
 android {
     namespace = "com.flab.deepsleep"
     compileSdk = 35
-
     defaultConfig {
         applicationId = "com.flab.deepsleep"
         minSdk = 24

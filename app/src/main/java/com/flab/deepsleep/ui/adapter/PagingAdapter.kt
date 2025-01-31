@@ -8,19 +8,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
-import com.flab.deepsleep.databinding.ItemPhotoBinding
+import com.flab.deepsleep.databinding.HolderItemPhotoBinding
 import com.flab.deepsleep.ui.listener.OnHeartButtonClick
-import com.flab.deepsleep.ui.listener.UiItem
+import com.flab.deepsleep.ui.listener.OnPhotoItemClickListener
+import com.flab.deepsleep.ui.photo.UiItem
 
 /* HomeFragment - Adapter */
 class PagingAdapter(
-    private val onHeartButtonClick: OnHeartButtonClick
+    private val onHeartButtonClick: OnHeartButtonClick,
+    private val onPhotoItemClickListener: OnPhotoItemClickListener
 ) :
     PagingDataAdapter<UiItem, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     class ImageViewHolder(
-        private val binding: ItemPhotoBinding,
-        private val onHeartButtonClick: OnHeartButtonClick
+        private val binding: HolderItemPhotoBinding,
+        private val onHeartButtonClick: OnHeartButtonClick,
+        private val onPhotoItemClickListener: OnPhotoItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
         private val btHeart: ImageView = binding.btHeart
@@ -31,7 +34,9 @@ class PagingAdapter(
             btHeart.setOnClickListener {
                 onHeartButtonClick.onHeartButtonClick(uiItem)
             }
-
+            imageView.setOnClickListener {
+                onPhotoItemClickListener.onPhotoItemClick(uiItem)
+            }
             val imageUrl = uiItem.urls
             if (imageUrl != null) {
                 Glide.with(imageView.context)
@@ -45,8 +50,9 @@ class PagingAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding, onHeartButtonClick)
+        val binding =
+            HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ImageViewHolder(binding, onHeartButtonClick, onPhotoItemClickListener)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {

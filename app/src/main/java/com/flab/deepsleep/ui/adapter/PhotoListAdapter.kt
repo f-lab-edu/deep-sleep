@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.room.Photo
-import com.flab.deepsleep.databinding.ItemPhotoBinding
+import com.flab.deepsleep.databinding.HolderItemPhotoBinding
 import com.flab.deepsleep.ui.listener.OnDeletePhotoClick
 
 /* BookmarkFragment - Adapter */
@@ -19,7 +19,7 @@ class PhotoListAdapter(
     ListAdapter<Photo, PhotoListAdapter.ItemViewHolder>(ITEM_DIFF_CALLBACK) {
 
     class ItemViewHolder(
-        private val binding: ItemPhotoBinding,
+        private val binding: HolderItemPhotoBinding,
         private val onDeletePhotoClick: OnDeletePhotoClick
     ) :
         RecyclerView.ViewHolder(binding.root) {
@@ -46,7 +46,7 @@ class PhotoListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding, onDeletePhotoClick)
     }
 
