@@ -3,7 +3,6 @@ package com.flab.deepsleep.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,16 +10,28 @@ import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.room.Photo
 import com.flab.deepsleep.databinding.HolderItemPhotoBinding
+import com.flab.deepsleep.ui.listener.OnDeletePhotoClick
 
-class PhotoAdapter : ListAdapter<Photo, PhotoAdapter.ItemViewHolder>(ITEM_DIFF_CALLBACK) {
+/* BookmarkFragment - Adapter */
+class PhotoListAdapter(
+    private val onDeletePhotoClick: OnDeletePhotoClick
+) :
+    ListAdapter<Photo, PhotoListAdapter.ItemViewHolder>(ITEM_DIFF_CALLBACK) {
 
-    class ItemViewHolder(private val binding: HolderItemPhotoBinding) :
+    class ItemViewHolder(
+        private val binding: HolderItemPhotoBinding,
+        private val onDeletePhotoClick: OnDeletePhotoClick
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
-        private val title: TextView = binding.photoTitle
+        private val btHeart: ImageView = binding.btHeart
 
         fun bind(photo: Photo) {
-            title.text = photo.description
+            binding.photoTitle.text = photo.description
+            btHeart.isSelected = photo.isLike
+            btHeart.setOnClickListener {
+                onDeletePhotoClick.onDeletePhotoClick(photo)
+            }
 
             val imageUrl = photo.urls
             if (imageUrl != null) {
@@ -36,7 +47,7 @@ class PhotoAdapter : ListAdapter<Photo, PhotoAdapter.ItemViewHolder>(ITEM_DIFF_C
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemViewHolder(binding)
+        return ItemViewHolder(binding, onDeletePhotoClick)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

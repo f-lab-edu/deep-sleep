@@ -11,10 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentHomeBinding
-import com.flab.deepsleep.ui.details.DetailsActivity
-import com.flab.deepsleep.ui.main.MainViewModel
-import com.flab.deepsleep.ui.photo.OnButtonClickListener
-import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
+import com.flab.deepsleep.ui.activity.DetailsActivity
+import com.flab.deepsleep.ui.listener.OnHeartButtonClick
+import com.flab.deepsleep.ui.listener.OnPhotoItemClickListener
+import com.flab.deepsleep.ui.photo.UiItem
+import com.flab.deepsleep.ui.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -23,10 +24,10 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val mainViewModel: MainViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private val photoRecyclerView: RecyclerView by lazy { binding.photosRecyclerView }
-    private val buttonClick = OnButtonClickListener { uiItem ->
-        mainViewModel.insertPhoto(uiItem)
+    private val buttonClick = OnHeartButtonClick { uiItem ->
+        isLikedCheck(uiItem)
     }
     private val onPhotoItemClickListener =
         OnPhotoItemClickListener { uiItem ->
@@ -49,7 +50,7 @@ class HomeFragment : Fragment() {
         setRecyclerView()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            mainViewModel.items.collectLatest { pagingData ->
+            homeViewModel.items.collectLatest { pagingData ->
                 pagingAdapter.submitData(pagingData)
             }
         }
@@ -58,11 +59,19 @@ class HomeFragment : Fragment() {
     private fun setRecyclerView() {
         photoRecyclerView.layoutManager = GridLayoutManager(context, 2)
         photoRecyclerView.adapter = pagingAdapter
+        photoRecyclerView.itemAnimator = null
+    }
+
+    private fun isLikedCheck(uiItem: UiItem) {
+        if (uiItem.isLike) {
+            uiItem.id?.let { homeViewModel.deletePhoto(it) }
+        } else {
+            homeViewModel.insertPhoto(uiItem)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }

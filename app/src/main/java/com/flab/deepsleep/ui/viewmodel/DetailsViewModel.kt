@@ -1,4 +1,4 @@
-package com.flab.deepsleep.ui.details
+package com.flab.deepsleep.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

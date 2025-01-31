@@ -1,4 +1,4 @@
-package com.flab.deepsleep.ui.main
+package com.flab.deepsleep.ui.activity
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.ActivityMainBinding
 import com.flab.deepsleep.ui.adapter.ViewPagerAdapter
+import com.flab.deepsleep.ui.viewmodel.HomeViewModel
 import com.flab.deepsleep.utils.Index
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -18,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val mainViewModel: MainViewModel by viewModels()
+    private val photoViewModel: HomeViewModel by viewModels()
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val tabLayout: TabLayout by lazy { binding.tabLayout }
     private val viewPager: ViewPager2 by lazy { binding.viewPager }
@@ -32,11 +33,11 @@ class MainActivity : AppCompatActivity() {
 
         /* 검색어 입력시 자동 호출 */
         binding.editText.doOnTextChanged { text, start, before, count ->
-            mainViewModel.searchPhotos(text.toString())
+            photoViewModel.searchPhotos(text.toString())
         }
 
         /* 에러 관찰 */
-        mainViewModel.errorMessage.observe(this) { it ->
+        photoViewModel.errorMessage.observe(this) { it ->
             it?.let {
                 showErrorDialog(it)
             }

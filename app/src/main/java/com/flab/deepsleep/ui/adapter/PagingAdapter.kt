@@ -9,37 +9,34 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.HolderItemPhotoBinding
-import com.flab.deepsleep.ui.photo.OnButtonClickListener
-import com.flab.deepsleep.ui.photo.OnPhotoItemClickListener
+import com.flab.deepsleep.ui.listener.OnHeartButtonClick
+import com.flab.deepsleep.ui.listener.OnPhotoItemClickListener
 import com.flab.deepsleep.ui.photo.UiItem
 
+/* HomeFragment - Adapter */
 class PagingAdapter(
-    private val buttonClick: OnButtonClickListener,
+    private val onHeartButtonClick: OnHeartButtonClick,
     private val onPhotoItemClickListener: OnPhotoItemClickListener
 ) :
     PagingDataAdapter<UiItem, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     class ImageViewHolder(
         private val binding: HolderItemPhotoBinding,
-        private val buttonClick: OnButtonClickListener,
+        private val onHeartButtonClick: OnHeartButtonClick,
         private val onPhotoItemClickListener: OnPhotoItemClickListener
-
     ) : RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
+        private val btHeart: ImageView = binding.btHeart
 
         fun bind(uiItem: UiItem) {
-            itemView.tag = uiItem
-            binding.btHeart.isSelected = uiItem.isLike
-
-            /* Like Button */
-            binding.btHeart.setOnClickListener {
-                buttonClick.onButtonClick(uiItem)
+            binding.photoTitle.text = uiItem.description
+            btHeart.isSelected = uiItem.isLike
+            btHeart.setOnClickListener {
+                onHeartButtonClick.onHeartButtonClick(uiItem)
             }
-
             imageView.setOnClickListener {
                 onPhotoItemClickListener.onPhotoItemClick(uiItem)
             }
-
             val imageUrl = uiItem.urls
             if (imageUrl != null) {
                 Glide.with(imageView.context)
@@ -55,14 +52,11 @@ class PagingAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding =
             HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding, buttonClick, onPhotoItemClickListener)
+        return ImageViewHolder(binding, onHeartButtonClick, onPhotoItemClickListener)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val uiItem = getItem(position)
-        uiItem?.let {
-            holder.bind(uiItem)
-        }
+        getItem(position)?.let { holder.bind(it) }
     }
 
     /* Paging */

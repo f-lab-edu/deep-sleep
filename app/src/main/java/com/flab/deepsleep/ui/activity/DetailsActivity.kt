@@ -1,4 +1,4 @@
-package com.flab.deepsleep.ui.details
+package com.flab.deepsleep.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.ActivityDetailsBinding
+import com.flab.deepsleep.ui.viewmodel.DetailsViewModel
 import com.flab.deepsleep.ui.photo.UiItem
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

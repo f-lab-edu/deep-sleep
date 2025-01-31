@@ -18,6 +18,6 @@ interface PhotoDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(vararg like: Photo)
 
-    @Delete
-    suspend fun delete(like: Photo)
+    @Query("DELETE FROM photo WHERE id = :id")
+    suspend fun delete(id: String)
 }

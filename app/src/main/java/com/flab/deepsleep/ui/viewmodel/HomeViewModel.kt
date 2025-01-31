@@ -1,4 +1,4 @@
-package com.flab.deepsleep.ui.main
+package com.flab.deepsleep.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,16 +24,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val unplashRepository: UnplashRepository,
     private val photoRepository: PhotoRepository
 ) : ViewModel() {
@@ -50,7 +48,7 @@ class MainViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val items: Flow<PagingData<UiItem>> = _apiPhotoState.asFlow()
-        .map { state -> state ?: emptyList() } // null 처리
+        .map { state -> state ?: emptyList() }
         .flatMapLatest { photos ->
             Pager(
                 config = PagingConfig(pageSize = 20, enablePlaceholders = false),
@@ -61,28 +59,31 @@ class MainViewModel @Inject constructor(
         .combine(savedPhotos) { pagingData, savedPhotos ->
             pagingData.map { photo ->
                 val savedPhoto = savedPhotos.find { it.id == photo.id }
-                mapToUiItem(photo, savedPhoto)
+                if (savedPhoto != null) {
+                    mapToUiItem(photo, savedPhoto)
+                } else {
+                    mapToUiItem(photo, null).copy(isLike = false)
+                }
             }
         }
 
-    /* 즐겨찾기 추가 */
+    /* 사진 검색 */
+    fun searchPhotos(query: String) {
+        searchDebouncer(query)
+    }
+
+    /* Bookmark 추가 */
     fun insertPhoto(uiItem: UiItem) {
         viewModelScope.launch {
             photoRepository.insertPhoto(uiItem.toPhoto())
         }
     }
 
-    /* Room Flow */
-    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptyList()
-        )
-
-    /* 사진 검색 */
-    fun searchPhotos(query: String) {
-        searchDebouncer(query)
+    /* Bookmark 삭제 */
+    fun deletePhoto(id: String) {
+        viewModelScope.launch {
+            photoRepository.deletePhoto(id)
+        }
     }
 
     private suspend fun getSearchPhotos(query: String): List<SinglePhoto> {

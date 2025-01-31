@@ -12,6 +12,6 @@ class OffLinePhotoRepository(private val photoDao: PhotoDao) : PhotoRepository {
     override suspend fun insertPhoto(photo: Photo) =
         withContext(Dispatchers.IO) { photoDao.insert(photo) }
 
-    override suspend fun deletePhoto(photo: Photo) =
-        withContext(Dispatchers.IO) { photoDao.delete(photo) }
+    override suspend fun deletePhoto(id: String) =
+        withContext(Dispatchers.IO) { photoDao.delete(id) }
 }
