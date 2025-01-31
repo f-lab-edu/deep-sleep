@@ -9,29 +9,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.ItemPhotoBinding
+import com.flab.deepsleep.ui.listener.OnHeartButtonClick
 import com.flab.deepsleep.ui.listener.UiItem
 
+/* HomeFragment - Adapter */
 class PagingAdapter(
-    val onLikeToggled: (uiItem: UiItem) -> Unit
+    private val onHeartButtonClick: OnHeartButtonClick
 ) :
     PagingDataAdapter<UiItem, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     class ImageViewHolder(
         private val binding: ItemPhotoBinding,
-        onItemClick: (position: Int) -> Unit
+        private val onHeartButtonClick: OnHeartButtonClick
     ) : RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
-        val btHeart: ImageView = binding.btHeart
-
-        init {
-            btHeart.setOnClickListener {
-                onItemClick(bindingAdapterPosition)
-            }
-        }
+        private val btHeart: ImageView = binding.btHeart
 
         fun bind(uiItem: UiItem) {
             binding.photoTitle.text = uiItem.description
             btHeart.isSelected = uiItem.isLike
+            btHeart.setOnClickListener {
+                onHeartButtonClick.onHeartButtonClick(uiItem)
+            }
 
             val imageUrl = uiItem.urls
             if (imageUrl != null) {
@@ -47,14 +46,7 @@ class PagingAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding,
-            onItemClick = { position ->
-                val photo = getItem(position)
-                photo?.let {
-                    this.onLikeToggled(photo)
-                }
-            }
-        )
+        return ImageViewHolder(binding, onHeartButtonClick)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {

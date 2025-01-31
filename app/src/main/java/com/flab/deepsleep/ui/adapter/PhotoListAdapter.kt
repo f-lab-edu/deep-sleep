@@ -10,29 +10,28 @@ import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.data.entity.room.Photo
 import com.flab.deepsleep.databinding.ItemPhotoBinding
+import com.flab.deepsleep.ui.listener.OnDeletePhotoClick
 
+/* BookmarkFragment - Adapter */
 class PhotoListAdapter(
-    val onLikeToggled: (photo: Photo) -> Unit
+    private val onDeletePhotoClick: OnDeletePhotoClick
 ) :
     ListAdapter<Photo, PhotoListAdapter.ItemViewHolder>(ITEM_DIFF_CALLBACK) {
 
     class ItemViewHolder(
         private val binding: ItemPhotoBinding,
-        onItemClick: (position: Int) -> Unit
+        private val onDeletePhotoClick: OnDeletePhotoClick
     ) :
         RecyclerView.ViewHolder(binding.root) {
         private val imageView: ImageView = binding.photoImageView
         private val btHeart: ImageView = binding.btHeart
 
-        init {
-            btHeart.setOnClickListener {
-                onItemClick(bindingAdapterPosition)
-            }
-        }
-
         fun bind(photo: Photo) {
             binding.photoTitle.text = photo.description
             btHeart.isSelected = photo.isLike
+            btHeart.setOnClickListener {
+                onDeletePhotoClick.onDeletePhotoClick(photo)
+            }
 
             val imageUrl = photo.urls
             if (imageUrl != null) {
@@ -48,12 +47,7 @@ class PhotoListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemViewHolder(binding, onItemClick = { position ->
-            val photo = getItem(position)
-            photo?.let {
-                this.onLikeToggled(photo)
-            }
-        })
+        return ItemViewHolder(binding, onDeletePhotoClick)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

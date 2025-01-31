@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentBookmarkBinding
@@ -41,7 +41,7 @@ class BookmarkFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
 
-        lifecycle.coroutineScope.launch {
+        lifecycleScope.launch {
             bookmarkViewModel.getAllPhotos().collect {
                 photoListAdapter.submitList(it)
             }
@@ -55,6 +55,6 @@ class BookmarkFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null;
+        _binding = null
     }
 }
