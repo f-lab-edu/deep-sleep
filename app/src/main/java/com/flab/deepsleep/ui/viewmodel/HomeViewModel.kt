@@ -1,4 +1,4 @@
-package com.flab.deepsleep.ui.photo
+package com.flab.deepsleep.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,30 +7,30 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.data.entity.photos.toPhoto
+import androidx.paging.map
 import com.flab.deepsleep.data.entity.room.Photo
+import com.flab.deepsleep.data.entity.unplash.SinglePhoto
 import com.flab.deepsleep.data.repository.db.PhotoRepository
 import com.flab.deepsleep.data.repository.photo.PagingRepository
 import com.flab.deepsleep.data.repository.photo.UnsplashRepository
+import com.flab.deepsleep.ui.main.UiItem
+import com.flab.deepsleep.ui.main.toPhoto
+import com.flab.deepsleep.utils.Debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PhotoViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val unsplashRepository: UnsplashRepository,
     private val photoRepository: PhotoRepository,
     private val pagingRepository: PagingRepository
@@ -43,6 +43,9 @@ class PhotoViewModel @Inject constructor(
     /* Paging Flow */
     private val _query = MutableLiveData<String>()
 
+    /* Room Flow */
+    private val savedPhotos = photoRepository.getAllPhotos()
+
     private val queryFlow = _query.asFlow().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -50,7 +53,7 @@ class PhotoViewModel @Inject constructor(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val items: Flow<PagingData<SinglePhoto>> = queryFlow
+    val items: Flow<PagingData<UiItem>> = queryFlow
         .flatMapLatest { query ->
             pagingRepository.letPagingImagesFlow(
                 query = query.orEmpty()
@@ -59,24 +62,33 @@ class PhotoViewModel @Inject constructor(
             }
         }
         .cachedIn(viewModelScope)
-
-    /* Room Flow */
-    val allPhotos: Flow<List<Photo>> = photoRepository.getAllPhotos()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptyList()
-        )
+        .combine(savedPhotos) { pagingData, savedPhotos ->
+            pagingData.map { photo ->
+                val savedPhoto = savedPhotos.find { it.id == photo.id }
+                if (savedPhoto != null) {
+                    mapToUiItem(photo, savedPhoto)
+                } else {
+                    mapToUiItem(photo, null).copy(isLike = false)
+                }
+            }
+        }
 
     /* 사진 검색 */
     fun searchPhotos(query: String) {
         searchDebouncer(query)
     }
 
-    /* 즐겨찾기 추가 */
-    fun insertPhoto(singlePhoto: SinglePhoto) {
-        viewModelScope.launch(Dispatchers.IO) {
-            photoRepository.insertPhoto(singlePhoto.toPhoto())
+    /* Bookmark 추가 */
+    fun insertPhoto(uiItem: UiItem) {
+        viewModelScope.launch {
+            photoRepository.insertPhoto(uiItem.toPhoto())
+        }
+    }
+
+    /* Bookmark 삭제 */
+    fun deletePhoto(id: String) {
+        viewModelScope.launch {
+            photoRepository.deletePhoto(id)
         }
     }
 
@@ -101,23 +113,20 @@ class PhotoViewModel @Inject constructor(
         }
     }
 
-    private fun <T> debounce(
-        timeMillis: Long = 300L,
-        coroutineScope: CoroutineScope,
-        block: suspend (T) -> Unit
-    ): (T) -> Unit {
-        var debounceJob: Job? = null
-        return { param: T ->
-            debounceJob?.cancel() // 이전 작업 취소
-            debounceJob = coroutineScope.launch {
-                delay(timeMillis)
-                block(param)
-            }
-        }
+    private fun mapToUiItem(photo: SinglePhoto, savedPhoto: Photo?): UiItem {
+        return UiItem(
+            id = photo.id,
+            createdAt = photo.createdAt,
+            description = photo.description,
+            likes = photo.likes,
+            urls = photo.urls?.raw,
+            username = photo.user?.username,
+            isLike = savedPhoto?.isLike ?: false
+        )
     }
 
-    private val searchDebouncer = debounce<String>(
-        timeMillis = 500L,
+    private val searchDebouncer = Debounce.debounce<String>(
+        timeMillis = 300L,
         coroutineScope = viewModelScope
     ) { query ->
         try {

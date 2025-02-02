@@ -1,7 +1,7 @@
 package com.flab.deepsleep.data.api
 
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.data.entity.photos.SearchPhotos
+import com.flab.deepsleep.data.entity.unplash.SinglePhoto
+import com.flab.deepsleep.data.entity.unplash.SearchPhotos
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

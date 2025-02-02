@@ -1,10 +1,7 @@
-package com.flab.deepsleep.data.entity.photos
+package com.flab.deepsleep.data.entity.unplash
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class Exif(
     @SerializedName("aperture")
     val aperture: String?,
@@ -20,4 +17,4 @@ data class Exif(
     val model: String?,
     @SerializedName("name")
     val name: String?
-) : Parcelable
+)

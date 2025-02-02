@@ -1,7 +1,7 @@
 package com.flab.deepsleep.data.repository.photo
 
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
-import com.flab.deepsleep.data.entity.photos.SearchPhotos
+import com.flab.deepsleep.data.entity.unplash.SinglePhoto
+import com.flab.deepsleep.data.entity.unplash.SearchPhotos
 
 interface UnsplashRepository {
     suspend fun getRandomPhotos(count: Int): List<SinglePhoto>

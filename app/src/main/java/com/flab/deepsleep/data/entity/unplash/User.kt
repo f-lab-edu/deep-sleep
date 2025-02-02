@@ -1,10 +1,7 @@
-package com.flab.deepsleep.data.entity.photos
+package com.flab.deepsleep.data.entity.unplash
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class User(
     @SerializedName("bio")
     val bio: String?,
@@ -26,4 +23,4 @@ data class User(
     val updatedAt: String?,
     @SerializedName("username")
     val username: String?
-) : Parcelable
+)

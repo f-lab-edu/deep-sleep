@@ -2,7 +2,7 @@ package com.flab.deepsleep.data.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
+import com.flab.deepsleep.data.entity.unplash.SinglePhoto
 
 class PhotoPagingSource(
     private val query: String,

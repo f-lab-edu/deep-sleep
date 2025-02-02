@@ -12,9 +12,12 @@ interface PhotoDao {
     @Query("SELECT * FROM `photo` order by pk DESC")
     fun getAll(): Flow<List<Photo>>
 
+    @Query("SELECT * from photo WHERE id = :id")
+    fun getPhoto(id: String): Flow<Photo>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(vararg like: Photo)
 
-    @Delete
-    suspend fun delete(like: Photo)
+    @Query("DELETE FROM photo WHERE id = :id")
+    suspend fun delete(id: String)
 }

@@ -1,7 +1,6 @@
 package com.flab.deepsleep.data.di
 
 import android.content.Context
-import com.flab.deepsleep.BuildConfig
 import com.flab.deepsleep.data.api.UnsplashService
 import com.flab.deepsleep.data.entity.room.AppDatabase
 import com.flab.deepsleep.data.repository.db.PhotoRepository
@@ -9,6 +8,7 @@ import com.flab.deepsleep.data.repository.db.OffLinePhotoRepository
 import com.flab.deepsleep.data.repository.photo.PagingRepository
 import com.flab.deepsleep.data.repository.photo.UnsplashRepository
 import com.flab.deepsleep.data.repository.photo.UnsplashRepositoryImpl
+import com.itkacher.okprofiler.BuildConfig
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import dagger.Module
 import dagger.Provides

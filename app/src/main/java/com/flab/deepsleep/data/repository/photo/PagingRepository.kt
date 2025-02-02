@@ -3,7 +3,7 @@ package com.flab.deepsleep.data.repository.photo
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.flab.deepsleep.data.entity.photos.SinglePhoto
+import com.flab.deepsleep.data.entity.unplash.SinglePhoto
 import com.flab.deepsleep.data.source.PhotoPagingSource
 import kotlinx.coroutines.flow.Flow
 

@@ -1,11 +1,7 @@
-package com.flab.deepsleep.data.entity.photos
+package com.flab.deepsleep.data.entity.unplash
 
-import android.os.Parcelable
-import com.flab.deepsleep.data.entity.room.Photo
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class SinglePhoto(
     @SerializedName("blur_hash")
     val blurHash: String?,
@@ -37,16 +33,4 @@ data class SinglePhoto(
     val urls: Urls?,
     @SerializedName("user")
     val user: User?
-) : Parcelable
-
-fun SinglePhoto.toPhoto(): Photo {
-    return Photo(
-        id = this.id,
-        likes = this.likes,
-        urls = this.urls?.raw,
-        description = this.description,
-        createdAt = this.createdAt,
-        username = this.user?.username,
-        isLike = true
-    )
-}
+)
