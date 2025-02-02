@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentHomeBinding
 import com.flab.deepsleep.ui.activity.DetailsActivity
 import com.flab.deepsleep.ui.listener.OnHeartButtonClick
 import com.flab.deepsleep.ui.listener.OnPhotoItemClickListener
-import com.flab.deepsleep.ui.photo.UiItem
+import com.flab.deepsleep.ui.main.UiItem
 import com.flab.deepsleep.ui.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        photoRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        photoRecyclerView.layoutManager = LinearLayoutManager(context)
         photoRecyclerView.adapter = pagingAdapter
         photoRecyclerView.itemAnimator = null
     }

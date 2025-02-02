@@ -2,11 +2,14 @@
     <string name="app_name">deepsleep</string>
 
     <!--activity_main-->
-    <string name="search">검색 입력</string>
+    <string name="search">Search here</string>
     <string name="test">테스트</string>
 
     <string name="home">홈</string>
     <string name="bookmark">북마크</string>
+
+    <string name="button_retry">retry</string>
+    <string name="label_error">Something went wrong, pleas try again</string>
     <!--./-->
 
     <dimen name="grid_spacing">8dp</dimen>

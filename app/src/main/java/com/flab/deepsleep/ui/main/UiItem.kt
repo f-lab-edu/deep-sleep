@@ -1,4 +1,4 @@
-package com.flab.deepsleep.ui.photo
+package com.flab.deepsleep.ui.main
 
 import android.os.Parcelable
 import com.flab.deepsleep.data.entity.room.Photo

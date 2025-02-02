@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flab.deepsleep.data.repository.db.PhotoRepository
-import com.flab.deepsleep.ui.photo.UiItem
-import com.flab.deepsleep.ui.photo.toPhoto
+import com.flab.deepsleep.ui.main.UiItem
+import com.flab.deepsleep.ui.main.toPhoto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

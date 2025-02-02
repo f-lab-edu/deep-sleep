@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.ActivityDetailsBinding
 import com.flab.deepsleep.ui.viewmodel.DetailsViewModel
-import com.flab.deepsleep.ui.photo.UiItem
+import com.flab.deepsleep.ui.main.UiItem
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.NumberFormat
