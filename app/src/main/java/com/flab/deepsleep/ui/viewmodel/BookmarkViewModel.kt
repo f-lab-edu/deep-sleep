@@ -2,7 +2,7 @@ package com.flab.deepsleep.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flab.deepsleep.data.entity.room.Photo
+import com.flab.deepsleep.data.entity.photo.Photo
 import com.flab.deepsleep.data.repository.db.PhotoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

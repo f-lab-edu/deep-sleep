@@ -2,12 +2,13 @@ package com.flab.deepsleep.data.di
 
 import android.content.Context
 import com.flab.deepsleep.data.api.UnsplashService
+import com.flab.deepsleep.data.entity.photo.PhotoDatabase
 import com.flab.deepsleep.data.entity.room.AppDatabase
 import com.flab.deepsleep.data.repository.db.PhotoRepository
 import com.flab.deepsleep.data.repository.db.OffLinePhotoRepository
 import com.flab.deepsleep.data.repository.photo.PagingRepository
 import com.flab.deepsleep.data.repository.photo.UnsplashRepository
-import com.flab.deepsleep.data.repository.photo.UnsplashRepositoryImpl
+import com.flab.deepsleep.data.repository.photo.UnsplashServiceImpl
 import com.itkacher.okprofiler.BuildConfig
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import dagger.Module
@@ -63,32 +64,38 @@ object HiltModule {
 
     @Provides
     @Singleton
-    fun provideUnplashService(retrofit: Retrofit): UnsplashService {
+    fun provideUnsplashService(retrofit: Retrofit): UnsplashService {
         return HiltModule.retrofit.create(UnsplashService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideUnplashRepository(apiService: UnsplashService): UnsplashRepository {
-        return UnsplashRepositoryImpl(apiService)
+    fun provideUnsplashRepository(apiService: UnsplashService): UnsplashRepository {
+        return UnsplashServiceImpl(apiService)
     }
 
     @Provides
     @Singleton
-    fun providePagingRepository() : PagingRepository {
-        return PagingRepository()
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return AppDatabase.getInstance(context)
+    }
+
+    @Provides
+    @Singleton
+    fun providePagingRepository(appDatabase: AppDatabase, unsplashRepository: UnsplashRepository) : PagingRepository {
+        return PagingRepository(appDatabase, unsplashRepository)
     }
 
     /*-- Room Database --*/
     @Provides
     @Singleton
-    fun provideItemsRepository(database: AppDatabase): PhotoRepository {
+    fun provideItemsRepository(database: PhotoDatabase): PhotoRepository {
         return OffLinePhotoRepository(database.photoDao())
     }
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
-        return AppDatabase.getDatabase(context)
+    fun provideDatabase(@ApplicationContext context: Context): PhotoDatabase {
+        return PhotoDatabase.getDatabase(context)
     }
 }

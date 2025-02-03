@@ -8,23 +8,22 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.flab.deepsleep.data.entity.room.Photo
+import com.flab.deepsleep.data.entity.photo.Photo
 import com.flab.deepsleep.data.entity.unplash.SinglePhoto
 import com.flab.deepsleep.data.repository.db.PhotoRepository
 import com.flab.deepsleep.data.repository.photo.PagingRepository
 import com.flab.deepsleep.data.repository.photo.UnsplashRepository
-import com.flab.deepsleep.ui.main.UiItem
-import com.flab.deepsleep.ui.main.toPhoto
+import com.flab.deepsleep.data.entity.room.UiItem
+import com.flab.deepsleep.data.entity.room.toPhoto
 import com.flab.deepsleep.utils.Debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,30 +51,19 @@ class HomeViewModel @Inject constructor(
         _query.value
     )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val items: Flow<PagingData<UiItem>> = queryFlow
-        .flatMapLatest { query ->
-            pagingRepository.letPagingImagesFlow(
-                query = query.orEmpty()
-            ) { q, page ->
-                getSearchPhotos(q, page)
-            }
-        }
-        .cachedIn(viewModelScope)
-        .combine(savedPhotos) { pagingData, savedPhotos ->
-            pagingData.map { photo ->
-                val savedPhoto = savedPhotos.find { it.id == photo.id }
-                if (savedPhoto != null) {
-                    mapToUiItem(photo, savedPhoto)
-                } else {
-                    mapToUiItem(photo, null).copy(isLike = false)
+    fun fetchUiItem(): Flow<PagingData<UiItem>> {
+        return pagingRepository.letPagingImagesFlowDb()
+            .map { it }
+            .cachedIn(viewModelScope)
+            .combine(savedPhotos) { pagingData, savedPhotos ->
+                pagingData.map { photo ->
+                    if (savedPhotos.any { it.id == photo.id }) {
+                        photo.copy(isLike = true)
+                    } else {
+                        photo.copy(isLike = false)
+                    }
                 }
             }
-        }
-
-    /* 사진 검색 */
-    fun searchPhotos(query: String) {
-        searchDebouncer(query)
     }
 
     /* Bookmark 추가 */
@@ -90,6 +78,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             photoRepository.deletePhoto(id)
         }
+    }
+
+    /* 사진 검색 */
+    fun searchPhotos(query: String) {
+        searchDebouncer(query)
     }
 
     private suspend fun getSearchPhotos(query: String, page: Int): List<SinglePhoto> {
@@ -113,6 +106,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private val searchDebouncer = Debounce.debounce<String>(
+        timeMillis = 300L,
+        coroutineScope = viewModelScope
+    ) { query ->
+        try {
+            _query.value = query
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun mapToUiItem(photo: SinglePhoto, savedPhoto: Photo?): UiItem {
         return UiItem(
             id = photo.id,
@@ -125,14 +129,4 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    private val searchDebouncer = Debounce.debounce<String>(
-        timeMillis = 300L,
-        coroutineScope = viewModelScope
-    ) { query ->
-        try {
-            _query.value = query
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 }

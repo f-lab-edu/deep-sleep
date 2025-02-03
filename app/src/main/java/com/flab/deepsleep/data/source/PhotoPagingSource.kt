@@ -2,17 +2,15 @@ package com.flab.deepsleep.data.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.flab.deepsleep.data.entity.unplash.SinglePhoto
+import com.flab.deepsleep.data.entity.room.UiItem
 
 class PhotoPagingSource(
-    private val query: String,
-    private val getSearchPhotos: suspend (String, Int) -> List<SinglePhoto>
-) : PagingSource<Int, SinglePhoto>() {
+    private val photos: List<UiItem>
+) : PagingSource<Int, UiItem>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SinglePhoto> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UiItem> {
         val page = params.key ?: 1
         return try {
-            val photos = getSearchPhotos(query, page)
             LoadResult.Page(
                 data = photos,
                 prevKey = if (page == 1) null else page - 1,
@@ -23,10 +21,11 @@ class PhotoPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, SinglePhoto>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, UiItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
+
 }

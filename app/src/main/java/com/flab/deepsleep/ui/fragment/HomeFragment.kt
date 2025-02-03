@@ -14,10 +14,11 @@ import com.flab.deepsleep.databinding.FragmentHomeBinding
 import com.flab.deepsleep.ui.activity.DetailsActivity
 import com.flab.deepsleep.ui.listener.OnHeartButtonClick
 import com.flab.deepsleep.ui.listener.OnPhotoItemClickListener
-import com.flab.deepsleep.ui.main.UiItem
+import com.flab.deepsleep.data.entity.room.UiItem
 import com.flab.deepsleep.ui.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -50,8 +51,8 @@ class HomeFragment : Fragment() {
         setRecyclerView()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.items.collectLatest { pagingData ->
-                pagingAdapter.submitData(pagingData)
+            homeViewModel.fetchUiItem().distinctUntilChanged().collectLatest {
+                pagingAdapter.submitData(it)
             }
         }
     }
@@ -74,4 +75,5 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

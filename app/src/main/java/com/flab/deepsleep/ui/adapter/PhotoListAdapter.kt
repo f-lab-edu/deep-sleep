@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
-import com.flab.deepsleep.data.entity.room.Photo
+import com.flab.deepsleep.data.entity.photo.Photo
 import com.flab.deepsleep.databinding.HolderItemPhotoBinding
 import com.flab.deepsleep.ui.listener.OnDeletePhotoClick
 

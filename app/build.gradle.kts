@@ -72,12 +72,12 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.profiler)
     implementation(libs.room.runtime)
+    implementation(libs.room.paging)
     implementation(libs.room.ktx)
     implementation(libs.fragment.ktx)
     implementation(libs.activity.ktx)
     implementation(libs.viewpager2)
     implementation(libs.material)
-    implementation(libs.appcompat)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

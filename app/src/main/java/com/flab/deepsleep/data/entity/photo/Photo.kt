@@ -1,9 +1,9 @@
-package com.flab.deepsleep.data.entity.room
+package com.flab.deepsleep.data.entity.photo
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.flab.deepsleep.ui.main.UiItem
+import com.flab.deepsleep.data.entity.room.UiItem
 
 @Entity(tableName = "photo")
 data class Photo(
@@ -14,8 +14,9 @@ data class Photo(
     @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "created_at") val createdAt: String?,
     @ColumnInfo(name = "username") val username: String?,
-    @ColumnInfo(name = "is_like", defaultValue = "0") val isLike: Boolean = false,
+    @ColumnInfo(name = "is_like", defaultValue = "0") val isLike: Boolean = false
 )
+
 fun Photo.toUiItem(): UiItem {
     return UiItem(
         id = this.id,

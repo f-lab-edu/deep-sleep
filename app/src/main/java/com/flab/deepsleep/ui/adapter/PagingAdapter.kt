@@ -11,7 +11,7 @@ import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.HolderItemPhotoBinding
 import com.flab.deepsleep.ui.listener.OnHeartButtonClick
 import com.flab.deepsleep.ui.listener.OnPhotoItemClickListener
-import com.flab.deepsleep.ui.main.UiItem
+import com.flab.deepsleep.data.entity.room.UiItem
 
 /* HomeFragment - Adapter */
 class PagingAdapter(
