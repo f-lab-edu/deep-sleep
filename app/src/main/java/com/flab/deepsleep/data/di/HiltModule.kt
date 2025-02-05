@@ -64,8 +64,8 @@ object HiltModule {
 
     @Provides
     @Singleton
-    fun provideUnsplashService(retrofit: Retrofit): UnsplashService {
-        return HiltModule.retrofit.create(UnsplashService::class.java)
+    fun provideUnsplashService(): UnsplashService {
+        return retrofit.create(UnsplashService::class.java)
     }
 
     @Provides
@@ -95,7 +95,7 @@ object HiltModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): PhotoDatabase {
+    fun providePhotoDatabase(@ApplicationContext context: Context): PhotoDatabase {
         return PhotoDatabase.getDatabase(context)
     }
 }

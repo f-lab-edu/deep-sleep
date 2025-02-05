@@ -14,6 +14,7 @@ class PagingRepository(
     private val unsplashRepository: UnsplashRepository
 ) {
     companion object {
+        const val DEFAULT_PAGE_INDEX = 1
         const val DEFAULT_PAGE_SIZE = 20
     }
 
@@ -22,13 +23,14 @@ class PagingRepository(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    fun letPagingImagesFlowDb(pagingConfig: PagingConfig = getDefaultPageConfig()): Flow<PagingData<UiItem>> {
+    fun letPagingImagesFlowDb(query: String, pagingConfig: PagingConfig = getDefaultPageConfig()): Flow<PagingData<UiItem>> {
         val pagingSourceFactory = { appDatabase.getUiItemDao().getAllUiItem() }
         return Pager(
             config = pagingConfig,
-            remoteMediator = PhotoMediator(appDatabase, unsplashRepository),
+            remoteMediator = PhotoMediator(query, appDatabase, unsplashRepository),
             pagingSourceFactory = pagingSourceFactory
         ).flow
     }
+
 
 }

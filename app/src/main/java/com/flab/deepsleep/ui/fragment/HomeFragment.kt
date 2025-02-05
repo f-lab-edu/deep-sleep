@@ -11,10 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentHomeBinding
-import com.flab.deepsleep.ui.activity.DetailsActivity
 import com.flab.deepsleep.ui.listener.OnHeartButtonClick
 import com.flab.deepsleep.ui.listener.OnPhotoItemClickListener
 import com.flab.deepsleep.data.entity.room.UiItem
+import com.flab.deepsleep.ui.activity.DetailsActivity
 import com.flab.deepsleep.ui.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

@@ -11,11 +11,15 @@ import com.flab.deepsleep.data.entity.room.UiItem
 import com.flab.deepsleep.data.entity.unplash.toUiItem
 import com.flab.deepsleep.data.repository.photo.PagingRepository
 import com.flab.deepsleep.data.repository.photo.UnsplashRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import java.io.IOException
 import java.io.InvalidObjectException
 
 @OptIn(ExperimentalPagingApi::class)
 class PhotoMediator(
+    private val query: String,
     private val appDatabase: AppDatabase,
     private val unsplashRepository: UnsplashRepository
 ) :
@@ -31,9 +35,14 @@ class PhotoMediator(
                 pageKeyData as Int
             }
         }
+
         try {
-            val response = unsplashRepository.getListPhotos(page, state.config.pageSize).map {
-                it.toUiItem()
+            val response = if (query.isEmpty()) {
+                unsplashRepository.getListPhotos(page, state.config.pageSize).map {
+                    it.toUiItem()
+                }
+            } else {
+                getSearchPhotos(query, page, state.config.pageSize)
             }
             val isEndOfList = response.isEmpty()
             appDatabase.withTransaction {
@@ -41,7 +50,7 @@ class PhotoMediator(
                     appDatabase.getRepoDao().clearRemoteKeys()
                     appDatabase.getUiItemDao().clearAllUiItem()
                 }
-                val prevKey = if (page == PagingRepository.DEFAULT_PAGE_SIZE) null else page - 1
+                val prevKey = if (page == PagingRepository.DEFAULT_PAGE_INDEX) null else page - 1
                 val nextKey = if (isEndOfList) null else page + 1
                 val keys = response.map {
                     RemoteKeys(
@@ -59,11 +68,32 @@ class PhotoMediator(
         }
     }
 
+    private suspend fun getSearchPhotos(query: String, page: Int, perPage: Int): List<UiItem> {
+        return coroutineScope {
+            try {
+                unsplashRepository.getSearchPhotos(query, page, perPage)
+                    .results
+                    ?.mapNotNull { result ->
+                        async {
+                            result?.takeIf { it.description != null }?.id?.let { photoId ->
+                                runCatching {
+                                    unsplashRepository.getSinglePhotoById(photoId).toUiItem()
+                                }.getOrNull()
+                            }
+                        }
+                    }?.awaitAll()?.filterNotNull() ?: emptyList()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emptyList()
+            }
+        }
+    }
+
     private suspend fun getKeyPageData(loadType: LoadType, state: PagingState<Int, UiItem>): Any? {
         return when (loadType) {
             LoadType.REFRESH -> {
                 val remoteKeys = getClosestRemoteKey(state)
-                remoteKeys?.nextKey?.minus(1) ?: PagingRepository.DEFAULT_PAGE_SIZE
+                remoteKeys?.nextKey?.minus(1) ?: PagingRepository.DEFAULT_PAGE_INDEX
             }
 
             LoadType.APPEND -> {
@@ -73,7 +103,7 @@ class PhotoMediator(
             }
 
             LoadType.PREPEND -> {
-                val remoteKeys = getLastRemoteKey(state)
+                val remoteKeys = getFirstRemoteKey(state)
                 if (remoteKeys?.nextKey == null) {
                     return MediatorResult.Success(endOfPaginationReached = true)
                 }

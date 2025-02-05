@@ -29,6 +29,7 @@ class PhotoListAdapter(
         fun bind(photo: Photo) {
             binding.photoTitle.text = photo.description
             btHeart.isSelected = photo.isLike
+
             btHeart.setOnClickListener {
                 onDeletePhotoClick.onDeletePhotoClick(photo)
             }
@@ -46,7 +47,8 @@ class PhotoListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val binding = HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding, onDeletePhotoClick)
     }
 
@@ -65,4 +67,5 @@ class PhotoListAdapter(
             }
         }
     }
+
 }

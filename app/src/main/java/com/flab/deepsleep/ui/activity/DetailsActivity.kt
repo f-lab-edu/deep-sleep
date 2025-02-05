@@ -5,12 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
+import com.flab.deepsleep.data.entity.room.UiItem
 import com.flab.deepsleep.databinding.ActivityDetailsBinding
 import com.flab.deepsleep.ui.viewmodel.DetailsViewModel
-import com.flab.deepsleep.data.entity.room.UiItem
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.NumberFormat
 import java.util.Locale
@@ -32,15 +36,28 @@ class DetailsActivity : AppCompatActivity() {
         uiItem?.let {
             loadImage(it.urls)
             bindPhotoDetails(it)
-            /* 좋아요 표시 */
             uiItem?.id?.let { detailsViewModel.loadPhotoLikeStatus(it) }
         } ?: run {
             loadImage(null)
             Timber.d("singlePhoto is null")
         }
 
-        detailsViewModel.isLiked.observe(this) { isLiked ->
-            detailsBinding.detailBtHeart.isSelected = isLiked
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                detailsViewModel.isLiked.collect { isLiked ->
+                    detailsBinding.detailBtHeart.isSelected = isLiked
+                }
+            }
+        }
+
+        detailsBinding.detailBtHeart.setOnClickListener {
+            uiItem?.let {
+                if (detailsViewModel.isLiked.value) {
+                    it.id?.let { it1 -> detailsViewModel.deletePhoto(it1) }
+                } else {
+                    detailsViewModel.insertPhoto(it)
+                }
+            }
         }
     }
 
@@ -61,10 +78,6 @@ class DetailsActivity : AppCompatActivity() {
             detailLikes.text = result
             detailUsername.text = uiItem.username
         }
-
-        detailsBinding.detailBtHeart.setOnClickListener {
-            detailsViewModel.insertPhoto(uiItem)
-        }
     }
 
     companion object {
@@ -75,6 +88,5 @@ class DetailsActivity : AppCompatActivity() {
             context.startActivity(intent)
         }
     }
+
 }
-
-

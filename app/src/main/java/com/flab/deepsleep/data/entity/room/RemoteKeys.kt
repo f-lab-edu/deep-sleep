@@ -1,9 +1,12 @@
 package com.flab.deepsleep.data.entity.room
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
 data class RemoteKeys(
-    @PrimaryKey val repoId: String, val prevKey: Int?, val nextKey: Int?
+    @PrimaryKey val repoId: String,
+    @ColumnInfo(name = "prevKey") val prevKey: Int?,
+    @ColumnInfo(name = "nextKey")val nextKey: Int?
 )
