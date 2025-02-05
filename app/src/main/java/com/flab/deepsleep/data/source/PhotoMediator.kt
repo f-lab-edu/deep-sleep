@@ -15,7 +15,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import java.io.IOException
-import java.io.InvalidObjectException
 
 @OptIn(ExperimentalPagingApi::class)
 class PhotoMediator(
@@ -89,7 +88,7 @@ class PhotoMediator(
         }
     }
 
-    private suspend fun getKeyPageData(loadType: LoadType, state: PagingState<Int, UiItem>): Any? {
+    private suspend fun getKeyPageData(loadType: LoadType, state: PagingState<Int, UiItem>): Any {
         return when (loadType) {
             LoadType.REFRESH -> {
                 val remoteKeys = getClosestRemoteKey(state)
@@ -98,16 +97,18 @@ class PhotoMediator(
 
             LoadType.APPEND -> {
                 val remoteKeys = getLastRemoteKey(state)
-                    ?: throw InvalidObjectException("Remote key should not be null for $loadType")
+                if (remoteKeys?.nextKey == null) {
+                    return MediatorResult.Success(endOfPaginationReached = true)
+                }
                 remoteKeys.nextKey
             }
 
             LoadType.PREPEND -> {
                 val remoteKeys = getFirstRemoteKey(state)
-                if (remoteKeys?.nextKey == null) {
+                if (remoteKeys?.prevKey == null) {
                     return MediatorResult.Success(endOfPaginationReached = true)
                 }
-                remoteKeys.nextKey
+                remoteKeys.prevKey
             }
         }
     }
