@@ -7,6 +7,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.ActivityMainBinding
@@ -16,6 +19,8 @@ import com.flab.deepsleep.utils.Index
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -37,9 +42,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(this) { it ->
-            it?.let {
-                showErrorDialog(it)
+        lifecycleScope.launch {
+            photoViewModel.errorMessage.collectLatest {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    showErrorDialog(it)
+                }
             }
         }
     }

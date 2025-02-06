@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentHomeBinding
@@ -51,8 +53,10 @@ class HomeFragment : Fragment() {
         setRecyclerView()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.fetchUiItem().distinctUntilChanged().collectLatest {
-                pagingAdapter.submitData(it)
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.fetchUiItem().distinctUntilChanged().collectLatest {
+                    pagingAdapter.submitData(it)
+                }
             }
         }
     }

@@ -1,7 +1,5 @@
 package com.flab.deepsleep.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -29,8 +27,8 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     /* Error */
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
+    private val _errorMessage = MutableStateFlow("")
+    val errorMessage: StateFlow<String> get() = _errorMessage
 
     /* Search Flow */
     private val _query = MutableStateFlow("")
