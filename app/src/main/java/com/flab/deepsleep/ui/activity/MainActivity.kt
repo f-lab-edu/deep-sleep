@@ -3,13 +3,9 @@ package com.flab.deepsleep.ui.activity
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.flab.deepsleep.R
 import com.flab.deepsleep.databinding.ActivityMainBinding
@@ -19,8 +15,6 @@ import com.flab.deepsleep.utils.Index
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -40,15 +34,6 @@ class MainActivity : AppCompatActivity() {
         binding.editText.doOnTextChanged { text, start, before, count ->
             photoViewModel.searchPhotos(text.toString())
         }
-
-        /* 에러 관찰 */
-        lifecycleScope.launch {
-            photoViewModel.errorMessage.collectLatest {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    showErrorDialog(it)
-                }
-            }
-        }
     }
 
     private fun setViewPager() {
@@ -63,13 +48,4 @@ class MainActivity : AppCompatActivity() {
         }.attach()
     }
 
-    private fun showErrorDialog(message: String) {
-        AlertDialog.Builder(this)
-            .setTitle("Error")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
 }

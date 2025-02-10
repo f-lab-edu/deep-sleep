@@ -26,10 +26,6 @@ class HomeViewModel @Inject constructor(
     private val pagingRepository: PagingRepository
 ) : ViewModel() {
 
-    /* Error */
-    private val _errorMessage = MutableStateFlow("")
-    val errorMessage: StateFlow<String> get() = _errorMessage
-
     /* Search Flow */
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query

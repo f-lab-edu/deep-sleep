@@ -51,12 +51,11 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         detailsBinding.detailBtHeart.setOnClickListener {
-            uiItem?.let {
-                if (detailsViewModel.isLiked.value) {
-                    it.id?.let { it1 -> detailsViewModel.deletePhoto(it1) }
-                } else {
-                    detailsViewModel.insertPhoto(it)
-                }
+            val item = uiItem ?: return@setOnClickListener
+            if (detailsViewModel.isLiked.value) {
+                item.id?.let { detailsViewModel.deletePhoto(it) }
+            } else {
+                detailsViewModel.insertPhoto(item)
             }
         }
     }
