@@ -25,6 +25,6 @@ dependencyResolutionManagement {
 
 }
 
-rootProject.name = "deepsleep"
+rootProject.name = "Photo-Collector"
 include(":app")
  

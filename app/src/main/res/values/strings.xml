@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">deepsleep</string>
+    <string name="app_name">Photo-Collector</string>
 
     <!--activity_main-->
     <string name="search">Search here</string>

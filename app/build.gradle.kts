@@ -11,10 +11,10 @@ plugins {
     alias(libs.plugins.parcelize)
 }
 android {
-    namespace = "com.flab.deepsleep"
+    namespace = "com.flab.photocollect"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.flab.deepsleep"
+        applicationId = "com.flab.photocollect"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
