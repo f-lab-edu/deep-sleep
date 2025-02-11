@@ -15,7 +15,6 @@ import com.flab.deepsleep.databinding.ActivityDetailsBinding
 import com.flab.deepsleep.ui.viewmodel.DetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -26,21 +25,18 @@ class DetailsActivity : AppCompatActivity() {
     }
     private val detailsViewModel: DetailsViewModel by viewModels()
     private val uiItem: UiItem? by lazy {
-        @Suppress("DEPRECATION") intent.getParcelableExtra<UiItem>("uiItem")
+        @Suppress("DEPRECATION") intent.getParcelableExtra("uiItem")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(detailsBinding.root)
 
-        uiItem?.let {
+        uiItem?.let { it ->
             loadImage(it.urls)
             bindPhotoDetails(it)
-            uiItem?.id?.let { detailsViewModel.loadPhotoLikeStatus(it) }
-        } ?: run {
-            loadImage(null)
-            Timber.d("singlePhoto is null")
-        }
+            it.id?.let { detailsViewModel.loadPhotoLikeStatus(it) }
+        } ?: loadImage(null)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -53,7 +49,8 @@ class DetailsActivity : AppCompatActivity() {
         detailsBinding.detailBtHeart.setOnClickListener {
             val item = uiItem ?: return@setOnClickListener
             if (detailsViewModel.isLiked.value) {
-                item.id?.let { detailsViewModel.deletePhoto(it) }
+                val id = item.id ?: return@setOnClickListener
+                detailsViewModel.deletePhoto(id)
             } else {
                 detailsViewModel.insertPhoto(item)
             }
