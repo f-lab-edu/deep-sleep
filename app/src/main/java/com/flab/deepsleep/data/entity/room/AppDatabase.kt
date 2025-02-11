@@ -5,20 +5,27 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Photo::class], version = 4, exportSchema = false)
+@Database(version = 1, entities = [UiItem::class, RemoteKeys::class], exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun photoDao(): PhotoDao
+
+    abstract fun getRepoDao(): RemoteKeysDao
+    abstract fun getUiItemDao(): UiItemDao
 
     companion object {
-        @Volatile
-        private var Instance: AppDatabase? = null
+        val UIITEMS_DB = "uiItems.db"
 
-        fun getDatabase(context: Context): AppDatabase {
-            return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, AppDatabase::class.java, "photo_database")
-                    .build()
-                    .also { Instance = it }
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getInstance(context: Context): AppDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE
+                    ?: buildDatabase(context).also { INSTANCE = it }
             }
-        }
+
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, UIITEMS_DB)
+                .build()
     }
+
 }

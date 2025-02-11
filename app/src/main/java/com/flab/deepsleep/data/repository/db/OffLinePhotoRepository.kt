@@ -1,7 +1,7 @@
 package com.flab.deepsleep.data.repository.db
 
-import com.flab.deepsleep.data.entity.room.Photo
-import com.flab.deepsleep.data.entity.room.PhotoDao
+import com.flab.deepsleep.data.entity.photo.Photo
+import com.flab.deepsleep.data.entity.photo.PhotoDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext

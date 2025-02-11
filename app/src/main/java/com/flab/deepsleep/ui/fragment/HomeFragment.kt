@@ -7,17 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.deepsleep.databinding.FragmentHomeBinding
-import com.flab.deepsleep.ui.activity.DetailsActivity
 import com.flab.deepsleep.ui.listener.OnHeartButtonClick
 import com.flab.deepsleep.ui.listener.OnPhotoItemClickListener
-import com.flab.deepsleep.ui.main.UiItem
+import com.flab.deepsleep.data.entity.room.UiItem
+import com.flab.deepsleep.ui.activity.DetailsActivity
 import com.flab.deepsleep.ui.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -50,8 +53,10 @@ class HomeFragment : Fragment() {
         setRecyclerView()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.items.collectLatest { pagingData ->
-                pagingAdapter.submitData(pagingData)
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.fetchUiItem().distinctUntilChanged().collectLatest {
+                    pagingAdapter.submitData(it)
+                }
             }
         }
     }
@@ -74,4 +79,5 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

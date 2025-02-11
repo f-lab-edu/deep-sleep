@@ -3,7 +3,6 @@ package com.flab.deepsleep.ui.activity
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
@@ -35,13 +34,6 @@ class MainActivity : AppCompatActivity() {
         binding.editText.doOnTextChanged { text, start, before, count ->
             photoViewModel.searchPhotos(text.toString())
         }
-
-        /* 에러 관찰 */
-        photoViewModel.errorMessage.observe(this) { it ->
-            it?.let {
-                showErrorDialog(it)
-            }
-        }
     }
 
     private fun setViewPager() {
@@ -56,13 +48,4 @@ class MainActivity : AppCompatActivity() {
         }.attach()
     }
 
-    private fun showErrorDialog(message: String) {
-        AlertDialog.Builder(this)
-            .setTitle("Error")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
 }

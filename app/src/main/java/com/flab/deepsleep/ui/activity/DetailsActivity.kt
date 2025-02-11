@@ -5,13 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
+import com.flab.deepsleep.data.entity.room.UiItem
 import com.flab.deepsleep.databinding.ActivityDetailsBinding
 import com.flab.deepsleep.ui.viewmodel.DetailsViewModel
-import com.flab.deepsleep.ui.main.UiItem
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -22,25 +25,35 @@ class DetailsActivity : AppCompatActivity() {
     }
     private val detailsViewModel: DetailsViewModel by viewModels()
     private val uiItem: UiItem? by lazy {
-        @Suppress("DEPRECATION") intent.getParcelableExtra<UiItem>("uiItem")
+        @Suppress("DEPRECATION") intent.getParcelableExtra("uiItem")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(detailsBinding.root)
 
-        uiItem?.let {
+        uiItem?.let { it ->
             loadImage(it.urls)
             bindPhotoDetails(it)
-            /* 좋아요 표시 */
-            uiItem?.id?.let { detailsViewModel.loadPhotoLikeStatus(it) }
-        } ?: run {
-            loadImage(null)
-            Timber.d("singlePhoto is null")
+            it.id?.let { detailsViewModel.loadPhotoLikeStatus(it) }
+        } ?: loadImage(null)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                detailsViewModel.isLiked.collect { isLiked ->
+                    detailsBinding.detailBtHeart.isSelected = isLiked
+                }
+            }
         }
 
-        detailsViewModel.isLiked.observe(this) { isLiked ->
-            detailsBinding.detailBtHeart.isSelected = isLiked
+        detailsBinding.detailBtHeart.setOnClickListener {
+            val item = uiItem ?: return@setOnClickListener
+            if (detailsViewModel.isLiked.value) {
+                val id = item.id ?: return@setOnClickListener
+                detailsViewModel.deletePhoto(id)
+            } else {
+                detailsViewModel.insertPhoto(item)
+            }
         }
     }
 
@@ -61,10 +74,6 @@ class DetailsActivity : AppCompatActivity() {
             detailLikes.text = result
             detailUsername.text = uiItem.username
         }
-
-        detailsBinding.detailBtHeart.setOnClickListener {
-            detailsViewModel.insertPhoto(uiItem)
-        }
     }
 
     companion object {
@@ -75,6 +84,5 @@ class DetailsActivity : AppCompatActivity() {
             context.startActivity(intent)
         }
     }
+
 }
-
-

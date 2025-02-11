@@ -7,6 +7,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UnsplashService {
+    @GET("/photos")
+    suspend fun getListPhotos(
+        @Query("client_id") clientId: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+    ): List<SinglePhoto>
+
     @GET("/photos/random")
     suspend fun getRandomPhotos(
         @Query("client_id") clientId: String,

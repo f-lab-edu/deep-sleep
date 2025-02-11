@@ -1,5 +1,6 @@
 package com.flab.deepsleep.data.entity.unplash
 
+import com.flab.deepsleep.data.entity.room.UiItem
 import com.google.gson.annotations.SerializedName
 
 data class SinglePhoto(
@@ -34,3 +35,15 @@ data class SinglePhoto(
     @SerializedName("user")
     val user: User?
 )
+
+fun SinglePhoto.toUiItem(): UiItem {
+    return UiItem(
+        id = this.id,
+        likes = this.likes,
+        urls = this.urls?.raw,
+        createdAt = this.createdAt,
+        description = this.description,
+        username = this.user?.username,
+        isLike = true,
+    )
+}

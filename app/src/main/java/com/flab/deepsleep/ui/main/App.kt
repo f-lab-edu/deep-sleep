@@ -2,13 +2,13 @@ package com.flab.deepsleep.ui.main
 
 import android.app.Application
 import com.flab.deepsleep.BuildConfig
-import com.flab.deepsleep.data.entity.room.AppDatabase
+import com.flab.deepsleep.data.entity.photo.PhotoDatabase
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
 @HiltAndroidApp
 class App : Application() {
-    val database: AppDatabase by lazy { AppDatabase.getDatabase(this) }
+    val database: PhotoDatabase by lazy { PhotoDatabase.getDatabase(this) }
 
     class App : Application() {
         override fun onCreate() {

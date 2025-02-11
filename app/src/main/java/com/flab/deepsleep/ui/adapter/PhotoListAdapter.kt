@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.deepsleep.R
-import com.flab.deepsleep.data.entity.room.Photo
+import com.flab.deepsleep.data.entity.photo.Photo
 import com.flab.deepsleep.databinding.HolderItemPhotoBinding
 import com.flab.deepsleep.ui.listener.OnDeletePhotoClick
 
@@ -29,6 +29,7 @@ class PhotoListAdapter(
         fun bind(photo: Photo) {
             binding.photoTitle.text = photo.description
             btHeart.isSelected = photo.isLike
+
             btHeart.setOnClickListener {
                 onDeletePhotoClick.onDeletePhotoClick(photo)
             }
@@ -46,7 +47,8 @@ class PhotoListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val binding = HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding, onDeletePhotoClick)
     }
 
@@ -65,4 +67,5 @@ class PhotoListAdapter(
             }
         }
     }
+
 }

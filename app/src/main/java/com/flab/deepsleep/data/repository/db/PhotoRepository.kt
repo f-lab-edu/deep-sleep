@@ -1,6 +1,6 @@
 package com.flab.deepsleep.data.repository.db
 
-import com.flab.deepsleep.data.entity.room.Photo
+import com.flab.deepsleep.data.entity.photo.Photo
 import kotlinx.coroutines.flow.Flow
 
 interface PhotoRepository {

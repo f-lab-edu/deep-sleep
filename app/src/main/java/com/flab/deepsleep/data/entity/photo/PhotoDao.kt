@@ -1,7 +1,6 @@
-package com.flab.deepsleep.data.entity.room
+package com.flab.deepsleep.data.entity.photo
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
