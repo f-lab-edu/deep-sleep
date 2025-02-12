@@ -3,6 +3,7 @@ package com.flab.photocollect.ui.activity
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
@@ -18,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val photoViewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val tabLayout: TabLayout by lazy { binding.tabLayout }
     private val viewPager: ViewPager2 by lazy { binding.viewPager }
@@ -32,7 +33,11 @@ class MainActivity : AppCompatActivity() {
 
         /* 검색어 입력시 자동 호출 */
         binding.editText.doOnTextChanged { text, start, before, count ->
-            photoViewModel.searchPhotos(text.toString())
+            homeViewModel.searchPhotos(text.toString())
+        }
+
+        homeViewModel.errorMessage.observe(this) {
+            showErrorDialog(it)
         }
     }
 
@@ -46,6 +51,16 @@ class MainActivity : AppCompatActivity() {
                 Index.BOOKMARK -> getString(R.string.bookmark)
             }
         }.attach()
+    }
+
+    private fun showErrorDialog(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Error")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
 }

@@ -1,5 +1,7 @@
 package com.flab.photocollect.ui.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -25,6 +27,10 @@ class HomeViewModel @Inject constructor(
     private val photoRepository: PhotoRepository,
     private val pagingRepository: PagingRepository
 ) : ViewModel() {
+
+    /* Error */
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
 
     /* Search Flow */
     private val _query = MutableStateFlow("")

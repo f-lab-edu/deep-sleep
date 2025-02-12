@@ -10,7 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flab.photocollect.databinding.FragmentHomeBinding
 import com.flab.photocollect.ui.listener.OnHeartButtonClick
@@ -62,7 +62,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        photoRecyclerView.layoutManager = LinearLayoutManager(context)
+        photoRecyclerView.layoutManager = GridLayoutManager(context, 2)
         photoRecyclerView.adapter = pagingAdapter
         photoRecyclerView.itemAnimator = null
     }

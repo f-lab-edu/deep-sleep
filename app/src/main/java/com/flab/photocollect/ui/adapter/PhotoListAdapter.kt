@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.photocollect.R
 import com.flab.photocollect.data.entity.photo.Photo
-import com.flab.photocollect.databinding.HolderItemPhotoBinding
+import com.flab.photocollect.databinding.HolderCardItemBinding
 import com.flab.photocollect.ui.listener.OnDeletePhotoClick
 
 /* BookmarkFragment - Adapter */
@@ -19,7 +19,7 @@ class PhotoListAdapter(
     ListAdapter<Photo, PhotoListAdapter.ItemViewHolder>(ITEM_DIFF_CALLBACK) {
 
     class ItemViewHolder(
-        private val binding: HolderItemPhotoBinding,
+        private val binding: HolderCardItemBinding,
         private val onDeletePhotoClick: OnDeletePhotoClick
     ) :
         RecyclerView.ViewHolder(binding.root) {
@@ -48,7 +48,7 @@ class PhotoListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding =
-            HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            HolderCardItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding, onDeletePhotoClick)
     }
 

@@ -30,8 +30,8 @@ object HiltModule {
         OkHttpClient.Builder()
             .apply {
                 if (BuildConfig.DEBUG) {
-                    addHttpLoggingInterceptor(this)
                     addInterceptor(OkHttpProfilerInterceptor())
+                    addHttpLoggingInterceptor(this)
                 }
             }
             .build()
@@ -39,23 +39,13 @@ object HiltModule {
 
     private fun addHttpLoggingInterceptor(builder: OkHttpClient.Builder) {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = HttpLoggingInterceptor.Level.HEADERS
         }
         builder.addInterceptor(loggingInterceptor)
     }
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
@@ -82,7 +72,10 @@ object HiltModule {
 
     @Provides
     @Singleton
-    fun providePagingRepository(appDatabase: AppDatabase, unsplashRepository: UnsplashRepository) : PagingRepository {
+    fun providePagingRepository(
+        appDatabase: AppDatabase,
+        unsplashRepository: UnsplashRepository
+    ): PagingRepository {
         return PagingRepository(appDatabase, unsplashRepository)
     }
 
