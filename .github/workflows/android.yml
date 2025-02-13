@@ -19,9 +19,9 @@ jobs:
         cache: gradle
 
     - name: access to secrets
-        run: |
+      run: |
           echo "UNSPLASH_ACCESS_KEY=$UNSPLASH_ACCESS_KEY" >> .env
-        env:
+      env:
           UNSPLASH_ACCESS_KEY: ${{secrets.UNSPLASH_ACCESS_KEY}}
 
     - name: Grant execute permission for gradlew
