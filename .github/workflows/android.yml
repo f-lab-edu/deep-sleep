@@ -18,11 +18,13 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: access to secrets
+    - name: Create local.properties
       run: |
-          echo "UNSPLASH_ACCESS_KEY=$UNSPLASH_ACCESS_KEY" >> .env
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          echo "UNSPLASH_ACCESS_KEY=$UNSPLASH_ACCESS_KEY" >> local.properties
       env:
           UNSPLASH_ACCESS_KEY: ${{secrets.UNSPLASH_ACCESS_KEY}}
+
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
