@@ -12,19 +12,19 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
 <br><br>
 ## 🎯 프로젝트 주요 관심사
 
-<h3>[브랜치 관리 전략]</h3>
+### [브랜치 관리 전략]
 
 * Git Flow 전략 사용
   
   * 기능별로 Branch를 분리하여 개발을 진행하였습니다.
-  * 모든 브랜치는 Pull Request에 **리뷰를 진행한 후 merge** 하였습니다.
+  * 모든 브랜치는 Pull Request에 **리뷰를 진행한 후 squash merge** 하였습니다.
   * Git 관리는 **Sourcetree** 툴을 사용하였습니다.
 
 <img src="https://github.com/user-attachments/assets/bd8134d5-bc9c-43eb-aff9-a776e4ce5f46" height="300">
 
 <br><br>
 
-* 실제 활용된 모습
+* 실제 활용 예시
 
 <table>
   <tr>
@@ -37,11 +37,11 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
 
 <br>
 
-<h3>[Testing]</h3>
+### [Testing]
 
 * CI/CD
 
-  * **Github Actions** 을 활용하여 CI/CD 파이프라인을 구축하여 빌드, 테스트, 배포와 같은 작업을 자동화하였습니다.
+  * **Github Actions** 을 활용하여 CI/CD 파이프라인을 구축하여 빌드, 테스트, 배포와 같은 작업을 자동화 하였습니다.
   * 다양한 수준의 자동화된 테스트(단위 및 통합 테스트)를 실행하여 **제대로 working 하도록 검증하는 것** 을 목표로 하였습니다.
 
 * API Test
@@ -50,24 +50,38 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
 
 <br>
 
-<h3>[Resource 관리]</h3>
+### [Resource 관리]
 
-* **사용자 경험을 향상**시키는 것을 목적으로 `Job` 및 `Debounce`를 활용하여 **효율적인 api 호출 작업**을 유도하였습니다.
+* 네트워크 트래픽
 
-* `DiffUtil`로 변경 부분만 감지하여 다시 그리도록 하여 **UI 업데이트 작업을 최소화** 하였습니다.
+  - **사용자 경험을 향상**시키는 것을 목적으로 `Job` 및 `Debounce`를 활용하여 **잦은 호출 방지**를 유도하였습니다.
+  - `RemoteMediator`를 활용하여 네트워크와 로컬을 연동하여 새로운 데이터 필요시에만 API 호출하도록 구현하였습니다.
 
-* `Room DB` 캐시에서 UI를 구동하도록 하고 새로운 데이터 필요시에만 네트워크 호출을 하도록 구현하여 **오프라인 지원** 및 **불필요한 네트워크 통신**을 줄였습니다.
+* UI 렌더링
 
-* `R8 build` 를 적용하여 앱(apk) 크기 축소화 및 경량화 하여 **성능 개선 및 최적화**하였습니다.
+  - `DiffUtil`로 변경 부분만 감지하여 다시 그리도록 하여 **UI 업데이트 작업을 최소화** 하였습니다.
+  - `Room DB`를 활용하여 로컬 캐싱으로 **오프라인 지원** 및 **UX 개선**하였습니다.
+
+* apk 사이즈
+
+  - `R8 build` 를 적용하여 앱 크기 축소화 및 경량화 하여 **약 55.13% 용량 감소**하였습니다.
 
 <table>
-  <tr><td>적용 전<td></tr>
   <tr>
-    <td></td>
+    <th>R8 적용 전</th>
   </tr>
-  <tr><td>적용 후<td></tr>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/039b45fd-1b0c-4e2b-9a79-4b992f2d664a" width="style=max-width"></td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/039b45fd-1b0c-4e2b-9a79-4b992f2d664a" width="700">
+    </td>
+  </tr>
+  <tr>
+    <th>R8 적용 후</th>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/user-attachments/assets/7313146f-d85d-44de-a071-8cb65d4c249f" width="700">
+    </td>
   </tr>
 </table>
 
@@ -75,12 +89,12 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
 
 ## 💥 TroubleShooting
 
-프로젝트를 진행하며 겪은 기술적 문제를 해결해 가는 과정과 이를 통해 배운 점을 정리하여 기록하였습니다. <br>
+프로젝트를 진행하며 겪은 **기술적 문제를 해결**해 가는 과정과 이를 통해 **배운 점**을 정리하여 기록하였습니다. <br>
 자세한 내용은 해당 Wiki 페이지에서 확인하실 수 있습니다.
 
-- [Debounce로 타이핑 이벤트 핸들링](https://github.com/f-lab-edu/Photo-Collector/wiki/Debounce-%EB%A1%9C-%ED%83%80%EC%9D%B4%ED%95%91-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%ED%95%B8%EB%93%A4%EB%A7%81)
+- [Async로 API 통신 속도 및 성능 개선](https://github.com/f-lab-edu/Photo-Collector/wiki/Async%EB%A1%9C-API-%ED%86%B5%EC%8B%A0-%EC%86%8D%EB%8F%84-%EB%B0%8F-%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0)
 
-- [Async로 api 통신 성능 개선](https://github.com/f-lab-edu/Photo-Collector/wiki/aync%EB%A1%9C-api-%ED%86%B5%EC%8B%A0-%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0)
+- [Debounce로 타이핑 이벤트 핸들링](https://github.com/f-lab-edu/Photo-Collector/wiki/Debounce-%EB%A1%9C-%ED%83%80%EC%9D%B4%ED%95%91-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%ED%95%B8%EB%93%A4%EB%A7%81)
 
 - [Network 및 Database의 페이징 처리](https://github.com/f-lab-edu/Photo-Collector/wiki/Network-%EB%B0%8F-Database%EC%9D%98-Pagination)
 
@@ -91,7 +105,7 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
 
 * 이미지를 클릭하면 해당 이미지에 대한 상세 정보를 확인할 수 있습니다.
   
-  * 제목 (description)
+  * 내용 (description)
   * 사용자 (user name)
   * 좋아요수 (likes)
   * 업로드 날짜 (created at)
@@ -125,4 +139,3 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
 | Image | `Glide` `Cardview` |
 | Collaboration | `Slack` `Sourcetree` |
 | ETC | `Paging3` `DiffUtil` `Timber` |
-
