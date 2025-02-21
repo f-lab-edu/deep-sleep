@@ -10,7 +10,6 @@ import androidx.paging.map
 import com.flab.photocollect.data.repository.db.PhotoRepository
 import com.flab.photocollect.data.repository.photo.PagingRepository
 import com.flab.photocollect.data.entity.room.UiItem
-import com.flab.photocollect.data.entity.room.toPhoto
 import com.flab.photocollect.utils.Debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

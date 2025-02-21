@@ -34,7 +34,6 @@ class PhotoMediator(
                 pageKeyData as Int
             }
         }
-
         try {
             val response = if (query.isEmpty()) {
                 unsplashRepository.getListPhotos(page, state.config.pageSize).map {
@@ -62,8 +61,8 @@ class PhotoMediator(
                 appDatabase.getUiItemDao().insertAll(response)
             }
             return MediatorResult.Success(endOfPaginationReached = isEndOfList)
-        } catch (exception: IOException) {
-            return MediatorResult.Error(exception)
+        } catch (e: IOException) {
+            return MediatorResult.Error(e)
         }
     }
 
@@ -81,7 +80,7 @@ class PhotoMediator(
                             }
                         }
                     }?.awaitAll()?.filterNotNull() ?: emptyList()
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 e.printStackTrace()
                 emptyList()
             }

@@ -3,7 +3,6 @@ package com.flab.photocollect.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flab.photocollect.data.entity.room.UiItem
-import com.flab.photocollect.data.entity.room.toPhoto
 import com.flab.photocollect.data.repository.db.PhotoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

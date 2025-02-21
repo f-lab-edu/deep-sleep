@@ -30,11 +30,15 @@ object HiltModule {
         OkHttpClient.Builder()
             .apply {
                 if (BuildConfig.DEBUG) {
-                    addInterceptor(OkHttpProfilerInterceptor())
+                    addOkHttpProfilerInterceptor(this)
                     addHttpLoggingInterceptor(this)
                 }
             }
             .build()
+    }
+
+    private fun addOkHttpProfilerInterceptor(builder: OkHttpClient.Builder) {
+        builder.addInterceptor(OkHttpProfilerInterceptor())
     }
 
     private fun addHttpLoggingInterceptor(builder: OkHttpClient.Builder) {

@@ -18,17 +18,18 @@ data class UiItem(
     @ColumnInfo(name = "created_at") val createdAt: String?,
     @ColumnInfo(name = "username") val username: String?,
     @ColumnInfo(name = "is_like", defaultValue = "0") val isLike: Boolean = false
-) : Parcelable
+) : Parcelable {
 
-fun UiItem.toPhoto(): Photo {
-    return Photo(
-        id = this.id,
-        likes = this.likes,
-        urls = this.urls,
-        createdAt = this.createdAt,
-        description = this.description,
-        username = this.username,
-        isLike = true,
-    )
+    fun toPhoto(): Photo {
+        return Photo(
+            id = this.id,
+            likes = this.likes,
+            urls = this.urls,
+            createdAt = this.createdAt,
+            description = this.description,
+            username = this.username,
+            isLike = true,
+        )
+    }
 
 }

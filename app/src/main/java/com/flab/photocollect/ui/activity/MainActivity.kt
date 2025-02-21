@@ -12,7 +12,7 @@ import com.flab.photocollect.R
 import com.flab.photocollect.databinding.ActivityMainBinding
 import com.flab.photocollect.ui.adapter.ViewPagerAdapter
 import com.flab.photocollect.ui.viewmodel.HomeViewModel
-import com.flab.photocollect.utils.Index
+import com.flab.photocollect.utils.Page
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         setViewPager()
 
         /* 검색어 입력시 자동 호출 */
-        binding.editText.doOnTextChanged { text, start, before, count ->
+        binding.editText.doOnTextChanged { text, _, _, _ ->
             homeViewModel.searchPhotos(text.toString())
         }
 
@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         val tabIcons = listOf(R.drawable.ic_home, R.drawable.ic_bookmark)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.icon = ContextCompat.getDrawable(this, tabIcons[position])
-            tab.text = when (Index.positionOfIndex(position)) {
-                Index.HOME -> getString(R.string.home)
-                Index.BOOKMARK -> getString(R.string.bookmark)
+            tab.text = when (Page.positionOfPage(position)) {
+                Page.HOME -> getString(R.string.home)
+                Page.BOOKMARK -> getString(R.string.bookmark)
             }
         }.attach()
     }
