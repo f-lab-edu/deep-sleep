@@ -9,7 +9,7 @@ import com.flab.photocollect.data.repository.db.OffLinePhotoRepository
 import com.flab.photocollect.data.repository.photo.PagingRepository
 import com.flab.photocollect.data.repository.photo.UnsplashRepository
 import com.flab.photocollect.data.repository.photo.UnsplashServiceImpl
-import com.itkacher.okprofiler.BuildConfig
+import com.flab.photocollect.BuildConfig
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import dagger.Module
 import dagger.Provides
