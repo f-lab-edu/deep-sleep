@@ -3,13 +3,6 @@
 Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 안드로이드 앱입니다.
 
 <br><br>
-
-## 🏗 Architecture & Modularization
-* **Clean Architecture**를 기반으로 **MVVM 패턴**에 따라 모듈화 하였습니다.
-
-<img src="https://github.com/user-attachments/assets/263cb50d-8030-418c-ac6e-26526e97255f" height="400">
-
-<br><br>
 ## 🎯 프로젝트 주요 관심사
 
 ### [브랜치 관리 전략]
@@ -28,9 +21,9 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
 
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/34f3ac94-a034-46df-9ced-91a60a380756" height="400"> <br>
+    <td><img src="https://github.com/user-attachments/assets/34f3ac94-a034-46df-9ced-91a60a380756" height="300"> <br>
       Develop branch </td>
-    <td><img src="https://github.com/user-attachments/assets/555468e0-d324-452e-b138-62ec7b8ca449" height="400"> <br>
+    <td><img src="https://github.com/user-attachments/assets/555468e0-d324-452e-b138-62ec7b8ca449" height="300"> <br>
       Feature branch </td>
   </tr>
 </table>
@@ -41,28 +34,23 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
 
 * CI/CD
 
-  * **Github Actions** 을 활용하여 CI/CD 파이프라인을 구축하여 빌드, 테스트, 배포와 같은 작업을 자동화 하였습니다.
-  * 다양한 수준의 자동화된 테스트(단위 및 통합 테스트)를 실행하여 **제대로 working 하도록 검증하는 것** 을 목표로 하였습니다.
+  - **Github Actions** 을 활용하여 CI/CD 파이프라인을 구축하여 빌드, 테스트, 배포와 같은 작업을 자동화 하였습니다.
+  - 다양한 수준의 자동화된 테스트(단위 및 통합 테스트)를 실행하여 **제대로 working 하도록 검증하는 것** 을 목표로 하였습니다.
 
 * API Test
 
-  * **Okhttp-profiler** 를 이용하여 OkHttp 요청 또는 응답 헤더를 디버깅 하고, api 호출 작업을 tracking 하였습니다.
+  - **Okhttp-profiler** 를 이용하여 OkHttp 요청 또는 응답 헤더를 디버깅 하고, api 호출 작업을 tracking 하였습니다.
 
-<br>
+### [주요 기능]
 
-### [Resource 관리]
+* 로컬 DB를 활용한 데이터 캐싱
 
-* 네트워크 트래픽
+  - `RemoteMediator`를 구현하는 공식 메뉴얼을 따라, 로컬 `Room` DB와 네트워크 호출에서 데이터를 load 하였다.
+  - 로컬 DB 캐시에서 UI를 구동하고 더 이상 데이터가 없을 때만 네트워크 요청으로 새로운 데이터를 load 한다.
 
-  - **사용자 경험을 향상**시키는 것을 목적으로 `Job` 및 `Debounce`를 활용하여 **잦은 호출 방지**를 유도하였습니다.
-  - `RemoteMediator`를 활용하여 네트워크와 로컬을 연동하여 새로운 데이터 필요시에만 API 호출하도록 구현하였습니다.
-
-* UI 렌더링
-
-  - `DiffUtil`로 변경 부분만 감지하여 다시 그리도록 하여 **UI 업데이트 작업을 최소화** 하였습니다.
-  - `Room DB`를 활용하여 로컬 캐싱으로 **오프라인 지원** 및 **UX 개선**하였습니다.
-
-* apk 사이즈
+* `DiffUtil`을 활용한 페이징 처리로 List 렌더링 최적화
+  
+* apk 사이즈 경량화
 
   - `R8 build` 를 적용하여 앱 크기 축소화 및 경량화 하여 **약 55.13% 용량 감소**하였습니다.
 
@@ -72,7 +60,7 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
   </tr>
   <tr>
     <td>
-      <img src="https://github.com/user-attachments/assets/039b45fd-1b0c-4e2b-9a79-4b992f2d664a" width="700">
+      <img src="https://github.com/user-attachments/assets/039b45fd-1b0c-4e2b-9a79-4b992f2d664a" width="600">
     </td>
   </tr>
   <tr>
@@ -80,29 +68,76 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
   </tr>
   <tr>
     <td>
-      <img src="https://github.com/user-attachments/assets/7313146f-d85d-44de-a071-8cb65d4c249f" width="700">
+      <img src="https://github.com/user-attachments/assets/7313146f-d85d-44de-a071-8cb65d4c249f" width="600">
     </td>
   </tr>
 </table>
 
+<br>
+
+
+## 💥트러블 슈팅
+
+### 1. Async로 API 통신 속도 및 성능 개선
+
+🚨문제 배경
+
+* [Business] 사용자가 검색어를 입력하면 query를 search하여 해당 이미지의 id 리스트를 받아와 id들을 파싱하여 개별 api 호출 후 결과값(이미지)을 받는다.
+* [Tech] api 통신 과정에서 여러 개의 개별 호출 개수가 많아짐에 따라 속도가 느려지거나 통신이 불안정하다.
+
+<br>
+
+💭해결 방법
+
+* `delay()`로 api 호출에 대기 시간을 걸고, `okhttp-profiler` 플러그인로 트래킹 해보니, 0.2초 단위로 flat하게 반환 되는 것을 확인하였다.
+
+<img src="https://github.com/user-attachments/assets/7d6eed75-d20a-49ec-ba54-bc42c75be5d7" width="600">
+
+* `Deffered`를 반환하는 `async`의 구동 방식을 알게 되어, 반환값이 있는 비동기 통신 시 Non-Blocking으로 병렬 처리한 `awaitAll()`로 한 번에 채워진 list를 가져올 수 있었다.
+
+<br>
+
+💡배운점
+
+* `Coroutine`으로 네트워크 중첩 구조의 비동기 처리를 Non-blocking으로 해결하여 API 실행 속도 8초에서 2초로 **75% 감소**되었습니다.
+* `Deferred`와 `Job`의 차이를 알게 되었고, `CoroutineScope`로 비동기 작업을 수행할 때 목적에 따라 어떻게 사용해야 하는지 알게 되었습니다.
+  
+<br>
+
+### 2. Debounce 로 타이핑 이벤트 핸들링
+
+🚨문제 배경
+
+* [Business] 사용자가 이미지를 탐색하기 위해 검색 query를 작성하면 자동 검색 활동이 시작되어 이미지를 출력한다.
+* [Tech] 타이핑 과정에서 잦은 API 호출이 연속될 시 불필요한 통신이 생길 수 있다.
+* [Tech] api 호출 도중에 또 다른 요청이 들어오게 되면 네트워크 통신 과정에서 충돌이 생길 수 있다.
+
+<br>
+
+💭해결 방법
+
+* 이벤트 핸들링에 대해 `Debounce`라는 개념을 알게 되어, query가 작성되는 동안 0.3초 정도 대기하도록 제어할 수 있게 되었다. 타이핑 이벤트가 끝나면 마지막에 API 호출로 이어지게 하여 **잦은 호출을 방지**하였다.
+* `CoroutineScope` 내부적으로 `Job`을 가지고 있어, 이를 통해 실행 중인 `Coroutine`을 추적하고 제어할 수 있다는 것을 알게 되었다.
+* 따라서 api 호출이 겹치게 되면 요청을 `cancel()`하고 마지막 이벤트의 결과값만 반환하는 게 가능해졌다.
+
+<br>
+
+💡배운점
+
+* 단순 타이핑으로 이미지를 바로 보여주는 편리 기능을 수행하면서도, 타이핑 활동에 있어 **안정성 있는 이벤트 핸들링**이 가능해졌다.
+* 이벤트 핸들링을 고려해 보면서, `Debounce`와 `Throttle`의 차이를 알게 되었고, `CoroutineScope`를 행하는 `Job`의 세부 동작 원리를 알게 되었다.
+
 <br><br>
 
-## 💥 TroubleShooting
+## 🏗 Architecture & Modularization
+* **Clean Architecture**를 기반으로 **MVVM 패턴**에 따라 모듈화 하였습니다.
 
-프로젝트를 진행하며 겪은 **기술적 문제를 해결**해 가는 과정과 이를 통해 **배운 점**을 정리하여 기록하였습니다. <br>
-자세한 내용은 해당 Wiki 페이지에서 확인하실 수 있습니다.
-
-- [Async로 API 통신 속도 및 성능 개선](https://github.com/f-lab-edu/Photo-Collector/wiki/Async%EB%A1%9C-API-%ED%86%B5%EC%8B%A0-%EC%86%8D%EB%8F%84-%EB%B0%8F-%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0)
-
-- [Debounce로 타이핑 이벤트 핸들링](https://github.com/f-lab-edu/Photo-Collector/wiki/Debounce-%EB%A1%9C-%ED%83%80%EC%9D%B4%ED%95%91-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%ED%95%B8%EB%93%A4%EB%A7%81)
-
-- [Network 및 Database의 페이징 처리](https://github.com/f-lab-edu/Photo-Collector/wiki/Network-%EB%B0%8F-Database%EC%9D%98-Pagination)
+<img src="https://github.com/user-attachments/assets/263cb50d-8030-418c-ac6e-26526e97255f" height="400">
 
 <br><br>
 
 ## 📕 Application Feature
 * 메인 화면에서는 매일 새로운 list의 image를 보여줍니다.
-
 * 이미지를 클릭하면 해당 이미지에 대한 상세 정보를 확인할 수 있습니다.
   
   * 내용 (description)
@@ -111,16 +146,11 @@ Unsplash API를 활용해 이미지를 탐색하고, 보관함에 저장하는 �
   * 업로드 날짜 (created at)
 
 * 이미지의 하트버튼을 누르면 하트 아이콘의 색깔이 채워지고, 해당 이미지가 내 보관함에 저장됩니다.
-
 * 다시 클릭하면 하트 아이콘의 색깔이 비워잠과 동시에 보관함에서 제거됩니다.
-
 * 저장된 이미지는 북마크 페이지에서 저장했던 이미지의 최신순으로 보이고,   
   보관한 이미지들은 앱 재시작 후에도 다시 확인할 수 있습니다.
-
 * 북마크 기능은 홈 화면에서, 상세 페이지에서, 보관함에서 모두 적용됩니다.
-
 * 검색창에 문자를 입력하면 자동으로 search 활동이 시작되고, 키워드에 해당하는 이미지들이 홈화면에 대체되어 출력됩니다.
-
 * 검색어를 입력하지 않으면, 초기에 보였던 이미지들이 기본적으로 보여집니다.
 
 <br><br>
