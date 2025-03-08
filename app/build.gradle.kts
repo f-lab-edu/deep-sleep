@@ -31,13 +31,17 @@ android {
         }
     }
     buildTypes {
+        debug {
+            isDebuggable = true
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            isDebuggable = true
+            isDebuggable = false
         }
     }
     compileOptions {
@@ -78,6 +82,7 @@ dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.viewpager2)
     implementation(libs.material)
+    implementation(libs.cardview)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

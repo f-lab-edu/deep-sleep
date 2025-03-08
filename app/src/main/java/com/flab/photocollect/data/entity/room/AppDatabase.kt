@@ -12,7 +12,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getUiItemDao(): UiItemDao
 
     companion object {
-        val UIITEMS_DB = "uiItems.db"
+        private const val UI_ITEMS_DB = "uiItems.db"
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -24,7 +24,7 @@ abstract class AppDatabase : RoomDatabase() {
             }
 
         private fun buildDatabase(context: Context) =
-            Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, UIITEMS_DB)
+            Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, UI_ITEMS_DB)
                 .build()
     }
 

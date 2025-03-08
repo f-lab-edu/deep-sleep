@@ -1,5 +1,7 @@
 package com.flab.photocollect.ui.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -8,7 +10,6 @@ import androidx.paging.map
 import com.flab.photocollect.data.repository.db.PhotoRepository
 import com.flab.photocollect.data.repository.photo.PagingRepository
 import com.flab.photocollect.data.entity.room.UiItem
-import com.flab.photocollect.data.entity.room.toPhoto
 import com.flab.photocollect.utils.Debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,6 +26,10 @@ class HomeViewModel @Inject constructor(
     private val photoRepository: PhotoRepository,
     private val pagingRepository: PagingRepository
 ) : ViewModel() {
+
+    /* Error */
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
 
     /* Search Flow */
     private val _query = MutableStateFlow("")

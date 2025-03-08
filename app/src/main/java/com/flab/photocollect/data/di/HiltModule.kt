@@ -9,7 +9,7 @@ import com.flab.photocollect.data.repository.db.OffLinePhotoRepository
 import com.flab.photocollect.data.repository.photo.PagingRepository
 import com.flab.photocollect.data.repository.photo.UnsplashRepository
 import com.flab.photocollect.data.repository.photo.UnsplashServiceImpl
-import com.itkacher.okprofiler.BuildConfig
+import com.flab.photocollect.BuildConfig
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import dagger.Module
 import dagger.Provides
@@ -30,32 +30,26 @@ object HiltModule {
         OkHttpClient.Builder()
             .apply {
                 if (BuildConfig.DEBUG) {
+                    addOkHttpProfilerInterceptor(this)
                     addHttpLoggingInterceptor(this)
-                    addInterceptor(OkHttpProfilerInterceptor())
                 }
             }
             .build()
     }
 
+    private fun addOkHttpProfilerInterceptor(builder: OkHttpClient.Builder) {
+        builder.addInterceptor(OkHttpProfilerInterceptor())
+    }
+
     private fun addHttpLoggingInterceptor(builder: OkHttpClient.Builder) {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = HttpLoggingInterceptor.Level.HEADERS
         }
         builder.addInterceptor(loggingInterceptor)
     }
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
@@ -82,7 +76,10 @@ object HiltModule {
 
     @Provides
     @Singleton
-    fun providePagingRepository(appDatabase: AppDatabase, unsplashRepository: UnsplashRepository) : PagingRepository {
+    fun providePagingRepository(
+        appDatabase: AppDatabase,
+        unsplashRepository: UnsplashRepository
+    ): PagingRepository {
         return PagingRepository(appDatabase, unsplashRepository)
     }
 

@@ -3,7 +3,6 @@ package com.flab.photocollect.data.entity.photo
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.flab.photocollect.data.entity.room.UiItem
 
 @Entity(tableName = "photo")
 data class Photo(
@@ -16,15 +15,3 @@ data class Photo(
     @ColumnInfo(name = "username") val username: String?,
     @ColumnInfo(name = "is_like", defaultValue = "0") val isLike: Boolean = false
 )
-
-fun Photo.toUiItem(): UiItem {
-    return UiItem(
-        id = this.id,
-        likes = this.likes,
-        urls = this.urls,
-        createdAt = this.createdAt,
-        description = this.description,
-        username = this.username,
-        isLike = true,
-    )
-}

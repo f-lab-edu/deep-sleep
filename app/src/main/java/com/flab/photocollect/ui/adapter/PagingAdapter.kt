@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flab.photocollect.R
-import com.flab.photocollect.databinding.HolderItemPhotoBinding
 import com.flab.photocollect.ui.listener.OnHeartButtonClick
 import com.flab.photocollect.ui.listener.OnPhotoItemClickListener
 import com.flab.photocollect.data.entity.room.UiItem
+import com.flab.photocollect.databinding.HolderCardItemBinding
 
 /* HomeFragment - Adapter */
 class PagingAdapter(
@@ -21,7 +21,7 @@ class PagingAdapter(
     PagingDataAdapter<UiItem, PagingAdapter.ImageViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     class ImageViewHolder(
-        private val binding: HolderItemPhotoBinding,
+        private val binding: HolderCardItemBinding,
         private val onHeartButtonClick: OnHeartButtonClick,
         private val onPhotoItemClickListener: OnPhotoItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -51,7 +51,7 @@ class PagingAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding =
-            HolderItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            HolderCardItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ImageViewHolder(binding, onHeartButtonClick, onPhotoItemClickListener)
     }
 
@@ -71,4 +71,5 @@ class PagingAdapter(
             }
         }
     }
+
 }
